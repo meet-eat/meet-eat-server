@@ -29,6 +29,8 @@ dependencies {
     // This dependency is used by the application.
     implementation("com.google.guava:guava:29.0-jre")
 
+    implementation(project(":meet-eat-data"))
+
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-web")
