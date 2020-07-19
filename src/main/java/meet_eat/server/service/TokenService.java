@@ -13,8 +13,8 @@ public class TokenService extends EntityService<Token, String> {
     private final UserRepository userRepository;
 
     @Autowired
-    public TokenService(MongoRepository<Token, String> entityRepository, UserRepository userRepository) {
-        super(entityRepository);
+    public TokenService(MongoRepository<Token, String> tokenRepository, UserRepository userRepository) {
+        super(tokenRepository);
         this.userRepository = userRepository;
     }
 

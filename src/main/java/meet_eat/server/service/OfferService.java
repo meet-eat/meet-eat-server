@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class OfferService extends EntityService<Offer, String> {
 
     @Autowired
-    public OfferService(MongoRepository<Offer, String> entityRepository) {
-        super(entityRepository);
+    public OfferService(MongoRepository<Offer, String> offerRepository) {
+        super(offerRepository);
     }
 }

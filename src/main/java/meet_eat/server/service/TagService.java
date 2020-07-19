@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class TagService extends EntityService<Tag, String> {
 
     @Autowired
-    public TagService(MongoRepository<Tag, String> entityRepository) {
-        super(entityRepository);
+    public TagService(MongoRepository<Tag, String> tagRepository) {
+        super(tagRepository);
     }
 }

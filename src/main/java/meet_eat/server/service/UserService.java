@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class UserService extends EntityService<User, String> {
 
     @Autowired
-    public UserService(MongoRepository<User, String> entityRepository) {
-        super(entityRepository);
+    public UserService(MongoRepository<User, String> userRepository) {
+        super(userRepository);
     }
 }
