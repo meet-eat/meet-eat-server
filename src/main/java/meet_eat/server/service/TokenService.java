@@ -2,6 +2,7 @@ package meet_eat.server.service;
 
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Token;
+import meet_eat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
