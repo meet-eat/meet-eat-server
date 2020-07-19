@@ -1,4 +1,4 @@
-package meet_eat.server.service;
+package meet_eat.server.service.security;
 
 import meet_eat.data.entity.Entity;
 import meet_eat.data.entity.Token;
