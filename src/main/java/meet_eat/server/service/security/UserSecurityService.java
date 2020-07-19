@@ -1,7 +1,9 @@
 package meet_eat.server.service.security;
 
 import meet_eat.data.entity.user.User;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserSecurityService extends SecurityService<User> {
 
     @Override

@@ -3,7 +3,9 @@ package meet_eat.server.service.security;
 import meet_eat.data.entity.Entity;
 import meet_eat.data.entity.Token;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
 
+@Service
 public abstract class SecurityService<T extends Entity> {
 
     private Token token;

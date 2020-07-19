@@ -1,7 +1,9 @@
 package meet_eat.server.service.security;
 
 import meet_eat.data.entity.Token;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TokenSecurityService extends SecurityService<Token> {
 
     @Override
