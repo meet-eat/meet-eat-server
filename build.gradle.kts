@@ -13,7 +13,9 @@ plugins {
     // Apply the application plugin to add support for building a CLI application.
     application
 
-    id("eclipse")
+    // IntelliJ Plugin
+    idea
+
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
 }
@@ -47,5 +49,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = "meet_eat.server.App"
+    mainClassName = "meet_eat.server.Application"
 }
