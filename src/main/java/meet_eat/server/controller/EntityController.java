@@ -15,4 +15,12 @@ public abstract class EntityController<T extends Entity, U, K extends EntityServ
         this.entityService = entityService;
         this.securityService = securityService;
     }
+
+    public K getEntityService() {
+        return entityService;
+    }
+
+    public SecurityService<T> getSecurityService() {
+        return securityService;
+    }
 }
