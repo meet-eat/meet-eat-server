@@ -30,6 +30,7 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
 
     public Token createToken(LoginCredential loginCredential) {
         // Check whether the user exists and login credentials are valid.
+        Objects.requireNonNull(loginCredential);
         User user = userService.getUserByEmail(loginCredential.getEmail());
         if (Objects.isNull(user) || !isValidLoginCredential(loginCredential)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_LOGIN_CREDENTIALS);
