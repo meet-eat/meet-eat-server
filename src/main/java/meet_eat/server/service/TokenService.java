@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenService extends EntityService<Token, String> {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public TokenService(MongoRepository<Token, String> tokenRepository, UserRepository userRepository) {
+    public TokenService(MongoRepository<Token, String> tokenRepository, UserService userService) {
         super(tokenRepository);
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public Token createToken(LoginCredential loginCredential) {
