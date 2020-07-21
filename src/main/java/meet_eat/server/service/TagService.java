@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TagService extends EntityService<Tag, String> {
+public class TagService extends EntityService<Tag, String, TagRepository> {
 
     @Autowired
     public TagService(TagRepository tagRepository) {

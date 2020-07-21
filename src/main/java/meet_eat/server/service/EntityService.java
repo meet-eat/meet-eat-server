@@ -7,35 +7,39 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public abstract class EntityService<T extends Entity, U> {
+public abstract class EntityService<T extends Entity, U, K extends MongoRepository<T, U>> {
 
-    private final MongoRepository<T, U> entityRepository;
+    private final K repository;
 
-    protected EntityService(MongoRepository<T, U> entityRepository) {
-        this.entityRepository = entityRepository;
+    protected EntityService(K repository) {
+        this.repository = repository;
     }
 
     public Iterable<T> getAll() {
-        return entityRepository.findAll();
+        return repository.findAll();
     }
 
     public Optional<T> get(U identifier) {
-        return entityRepository.findById(identifier);
+        return repository.findById(identifier);
     }
 
     public T post(T entity) {
-        return entityRepository.insert(entity);
+        return repository.insert(entity);
     }
 
     public T put(T entity) {
-        return entityRepository.save(entity);
+        return repository.save(entity);
     }
 
     public void delete(T entity) {
-        entityRepository.delete(entity);
+        repository.delete(entity);
     }
 
     public void delete(U identifier) {
-        entityRepository.deleteById(identifier);
+        repository.deleteById(identifier);
+    }
+
+    public K getRepository() {
+        return repository;
     }
 }

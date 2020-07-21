@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService extends EntityService<User, String> {
+public class UserService extends EntityService<User, String, UserRepository> {
 
     @Autowired
     public UserService(UserRepository userRepository) {
