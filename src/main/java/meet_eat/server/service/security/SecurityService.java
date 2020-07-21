@@ -2,32 +2,26 @@ package meet_eat.server.service.security;
 
 import meet_eat.data.entity.Entity;
 import meet_eat.data.entity.Token;
+import meet_eat.server.service.TokenService;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 @Service
 public abstract class SecurityService<T extends Entity> {
 
-    private Token token;
-    private HttpMethod httpMethod;
+    private final TokenService tokenService;
 
-    public abstract T anonymiseEntity(T entity);
-
-    public abstract boolean isLegalEntityOperation(T entity);
-
-    public Token getToken() {
-        return token;
+    protected SecurityService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
-    public HttpMethod getHttpMethod() {
-        return httpMethod;
+    public abstract boolean isLegalEntityOperation(T entity, Token authenticationToken, HttpMethod httpMethod);
+
+    public boolean isValidAuthentication(Token authenticationToken) {
+        return tokenService.isValidToken(authenticationToken);
     }
 
-    public void setToken(Token token) {
-        this.token = token;
-    }
-
-    public void setHttpMethod(HttpMethod httpMethod) {
-        this.httpMethod = httpMethod;
+    public TokenService getTokenService() {
+        return tokenService;
     }
 }
