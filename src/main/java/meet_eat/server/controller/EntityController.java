@@ -15,6 +15,9 @@ import java.util.Optional;
 @RestController
 public abstract class EntityController<T extends Entity<U>, U, K extends EntityService<T, U, ? extends MongoRepository<T, U>>> {
 
+    protected static final String PATH_VARIABLE_IDENTIFIER = "identifier";
+    protected static final String URI_PATH_SEGMENT_IDENTIFIER = "/{" + PATH_VARIABLE_IDENTIFIER + "}";
+
     private final K entityService;
     private final SecurityService<T> securityService;
 
