@@ -31,8 +31,8 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
     public Token createToken(LoginCredential loginCredential) {
         // Check whether the user exists and login credentials are valid.
         Objects.requireNonNull(loginCredential);
-        User user = userService.getByEmail(loginCredential.getEmail());
-        if (Objects.isNull(user) || !isValidLoginCredential(loginCredential)) {
+        Optional<User> optionalUser = userService.getByEmail(loginCredential.getEmail());
+        if (optionalUser.isEmpty() || !isValidLoginCredential(loginCredential)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_LOGIN_CREDENTIALS);
         }
 
@@ -51,15 +51,15 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
 
         // Hash the generated string, create the token and insert it into the repository.
         String tokenValue = Hashing.sha256().hashString(stringBuilder, Charsets.UTF_16).toString();
-        return getRepository().insert(new Token(user, tokenValue));
+        return getRepository().insert(new Token(optionalUser.get(), tokenValue));
     }
 
     public boolean isValidLoginCredential(LoginCredential loginCredential) {
         if (Objects.isNull(loginCredential)) {
             return false;
         }
-        User user = userService.getByEmail(loginCredential.getEmail());
-        return Objects.nonNull(user) && user.getPassword().equals(loginCredential.getPassword());
+        Optional<User> optionalUser = userService.getByEmail(loginCredential.getEmail());
+        return optionalUser.isPresent() && optionalUser.get().getPassword().equals(loginCredential.getPassword());
     }
 
     public boolean isValidToken(Token token) {

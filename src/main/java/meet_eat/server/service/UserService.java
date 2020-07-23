@@ -6,6 +6,8 @@ import meet_eat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService extends EntityService<User, String, UserRepository> {
 
@@ -14,7 +16,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
         super(userRepository);
     }
 
-    public User getByEmail(Email email) {
+    public Optional<User> getByEmail(Email email) {
         return getRepository().findOneByEmail(email);
     }
 }
