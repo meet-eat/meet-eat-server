@@ -42,9 +42,7 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     @GetMapping(EndpointPath.OFFERS)
     public ResponseEntity<Iterable<Offer>> getOffersByCreator(@RequestParam(value = REQUEST_PARAM_OWNER) String creatorIdentifier,
                                                               @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
-        if (Objects.isNull(creatorIdentifier)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (Objects.isNull(token)) {
+        if (Objects.isNull(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else if (!getSecurityService().isLegalGet(token)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
