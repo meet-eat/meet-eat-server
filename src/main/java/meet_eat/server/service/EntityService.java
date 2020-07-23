@@ -15,6 +15,10 @@ public abstract class EntityService<T extends Entity, U, K extends MongoReposito
         this.repository = repository;
     }
 
+    public boolean exists(U identifier) {
+        return repository.existsById(identifier);
+    }
+
     public Iterable<T> getAll() {
         return repository.findAll();
     }
