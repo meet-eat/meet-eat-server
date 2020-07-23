@@ -14,7 +14,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
         super(userRepository);
     }
 
-    public User getUserByEmail(Email email) {
+    public User getByEmail(Email email) {
         return getRepository().findOneByEmail(email);
     }
 }
