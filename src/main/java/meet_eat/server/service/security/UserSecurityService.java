@@ -16,7 +16,22 @@ public class UserSecurityService extends SecurityService<User> {
     }
 
     @Override
-    public boolean isLegalEntityOperation(User entity, Token authenticationToken, HttpMethod httpMethod) {
+    public boolean isLegalGet(Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPost(User entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPut(User entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalDelete(User entity, Token authenticationToken) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

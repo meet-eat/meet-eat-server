@@ -16,7 +16,22 @@ public class TagSecurityService extends SecurityService<Tag> {
     }
 
     @Override
-    public boolean isLegalEntityOperation(Tag entity, Token authenticationToken, HttpMethod httpMethod) {
+    public boolean isLegalGet(Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPost(Tag entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPut(Tag entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalDelete(Tag entity, Token authenticationToken) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

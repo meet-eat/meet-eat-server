@@ -16,7 +16,22 @@ public class OfferSecurityService extends SecurityService<Offer> {
     }
 
     @Override
-    public boolean isLegalEntityOperation(Offer entity, Token authenticationToken, HttpMethod httpMethod) {
+    public boolean isLegalGet(Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPost(Offer entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPut(Offer entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalDelete(Offer entity, Token authenticationToken) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

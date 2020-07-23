@@ -15,7 +15,22 @@ public class TokenSecurityService extends SecurityService<Token> {
     }
 
     @Override
-    public boolean isLegalEntityOperation(Token entity, Token authenticationToken, HttpMethod httpMethod) {
+    public boolean isLegalGet(Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPost(Token entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalPut(Token entity, Token authenticationToken) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isLegalDelete(Token entity, Token authenticationToken) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 }
