@@ -1,16 +1,73 @@
 package meet_eat.server.controller;
 
+import meet_eat.data.RequestHeaderField;
+import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.service.UserService;
 import meet_eat.server.service.security.UserSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController extends EntityController<User, String, UserService> {
 
+    private static final String PATH_VARIABLE_EMAIL = "email";
+    private static final String URI_PATH_SEGMENT_EMAIL = "/{" + PATH_VARIABLE_EMAIL + "}";
+
     @Autowired
     public UserController(UserService userService, UserSecurityService userSecurityService) {
         super(userService, userSecurityService);
+    }
+
+    // GET
+
+    @GetMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER)
+    public ResponseEntity<User> getUser(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
+                                        @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handleGet(identifier, token);
+    }
+
+    // POST
+
+    @PostMapping(EndpointPath.USERS)
+    public ResponseEntity<User> postUser(@RequestBody User user,
+                                         @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handlePost(user, token);
+    }
+
+    @PostMapping(EndpointPath.USERS + URI_PATH_SEGMENT_EMAIL)
+    public ResponseEntity<User> postPasswordReset(@PathVariable(value = PATH_VARIABLE_EMAIL) String emailAddress) {
+        throw new UnsupportedOperationException();
+    }
+
+    // PUT
+
+    @PutMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER)
+    public ResponseEntity<User> putUser(@PathVariable(value = PATH_VARIABLE_IDENTIFIER, required = false) String identifier,
+                                        @RequestBody User user,
+                                        @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handlePut(identifier, user, token);
+    }
+
+    // DELETE
+
+    @DeleteMapping(EndpointPath.USERS)
+    public ResponseEntity<Void> deleteUser(@RequestBody User user,
+                                           @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handleDelete(user, token);
+    }
+
+    @DeleteMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER)
+    public ResponseEntity<Void> deleteUser(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
+                                           @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handleDelete(identifier, token);
     }
 }
