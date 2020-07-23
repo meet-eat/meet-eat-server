@@ -65,9 +65,11 @@ public abstract class EntityController<T extends Entity<U>, U, K extends EntityS
         return new ResponseEntity<>(postedTag, HttpStatus.CREATED);
     }
 
-    protected ResponseEntity<T> handlePut(T entity, Token token) {
+    protected ResponseEntity<T> handlePut(U identifier, T entity, Token token) {
         if (Objects.isNull(entity)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (Objects.nonNull(identifier) && !identifier.equals(entity.getIdentifier())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else if (Objects.isNull(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else if (!getSecurityService().isLegalPut(entity, token)) {
