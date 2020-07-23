@@ -22,22 +22,17 @@ public class TokenController extends EntityController<Token, String, TokenServic
     }
 
     @PostMapping(EndpointPath.LOGIN)
-    public ResponseEntity<Token> login(@RequestBody LoginCredential loginCredential) {
-        if (Objects.isNull(loginCredential)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (!getEntityService().isValidLoginCredential(loginCredential)) {
+    public ResponseEntity<Token> login(@RequestBody(required = true) LoginCredential loginCredential) {
+        if (!getEntityService().isValidLoginCredential(loginCredential)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Token token = getEntityService().createToken(loginCredential);
-        return new ResponseEntity<>(token, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @PostMapping(EndpointPath.LOGOUT)
-    public ResponseEntity<Void> logout(@RequestBody Token token) {
-        if (Objects.isNull(token)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Void> logout(@RequestBody(required = true) Token token) {
         getEntityService().delete(token);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
