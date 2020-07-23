@@ -2,10 +2,12 @@ package meet_eat.server.controller;
 
 import meet_eat.data.RequestHeaderField;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.service.UserService;
 import meet_eat.server.service.security.UserSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +47,11 @@ public class UserController extends EntityController<User, String, UserService> 
 
     @PostMapping(EndpointPath.USERS + URI_PATH_SEGMENT_EMAIL)
     public ResponseEntity<User> postPasswordReset(@PathVariable(value = PATH_VARIABLE_EMAIL) String emailAddress) {
-        throw new UnsupportedOperationException();
+        // No errors are sent to the caller in order to avoid brute force searches identifying valid email addresses.
+        if (Email.isLegalEmailAddress(emailAddress)) {
+            getEntityService().resetPassword(emailAddress);
+        }
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     // PUT
