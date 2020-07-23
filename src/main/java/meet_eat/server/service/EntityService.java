@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public abstract class EntityService<T extends Entity, U, K extends MongoRepository<T, U>> {
+public abstract class EntityService<T extends Entity<U>, U, K extends MongoRepository<T, U>> {
 
     private final K repository;
 
