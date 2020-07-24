@@ -14,6 +14,9 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
     private static final String PASSWORD_RESET_SUBJECT = "Meet & Eat Password Reset";
     private static final String PASSWORD_RESET_TEXT_TEMPLATE = "Your new password is %s.";
+    private static final int PASSWORD_BASIC_CHAR_COUNT = 25;
+    private static final int PASSWORD_SPECIAL_CHAR_COUNT = 2;
+    private static final int PASSWORD_DIGIT_COUNT = 5;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -29,7 +32,8 @@ public class UserService extends EntityService<User, String, UserRepository> {
         Optional<User> optionalUser = getByEmail(userEmail);
         if (optionalUser.isPresent()) {
             // Generate a new password by using a password value supplier.
-            PasswordValueSupplier passwordValueSupplier = new PasswordValueSupplier();
+            PasswordValueSupplier passwordValueSupplier = new PasswordValueSupplier(PASSWORD_BASIC_CHAR_COUNT,
+                    PASSWORD_SPECIAL_CHAR_COUNT, PASSWORD_DIGIT_COUNT);
             String passwordValue = passwordValueSupplier.get();
             Password password = new Password(passwordValue);
 
