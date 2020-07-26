@@ -30,7 +30,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
     }
 
     public Optional<User> getByEmail(Email email) {
-        return getRepository().findOneByEmail(email);
+        return getRepository().findOneByEmail(Objects.requireNonNull(email));
     }
 
     public void resetPassword(String emailAddress) {
