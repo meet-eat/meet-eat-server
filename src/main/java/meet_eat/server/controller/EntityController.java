@@ -64,8 +64,8 @@ public abstract class EntityController<T extends Entity<U>, U, K extends EntityS
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        T postedTag = getEntityService().post(entity);
-        return new ResponseEntity<>(postedTag, HttpStatus.CREATED);
+        T postedEntity = getEntityService().post(entity);
+        return new ResponseEntity<>(postedEntity, HttpStatus.CREATED);
     }
 
     protected ResponseEntity<T> handlePut(U identifier, T entity, Token token) {
@@ -81,8 +81,8 @@ public abstract class EntityController<T extends Entity<U>, U, K extends EntityS
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        T puttedTag = getEntityService().put(entity);
-        return new ResponseEntity<>(puttedTag, HttpStatus.OK);
+        T puttedEntity = getEntityService().put(entity);
+        return new ResponseEntity<>(puttedEntity, HttpStatus.OK);
     }
 
     protected ResponseEntity<Void> handleDelete(T entity, Token token) {
