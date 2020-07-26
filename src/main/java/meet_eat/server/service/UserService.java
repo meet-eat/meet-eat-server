@@ -7,6 +7,7 @@ import meet_eat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -18,9 +19,14 @@ public class UserService extends EntityService<User, String, UserRepository> {
     private static final int PASSWORD_SPECIAL_CHAR_COUNT = 2;
     private static final int PASSWORD_DIGIT_COUNT = 5;
 
+    private final OfferService offerService;
+    private final TokenService tokenService;
+
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService) {
         super(userRepository);
+        this.offerService = offerService;
+        this.tokenService = tokenService;
     }
 
     public Optional<User> getByEmail(Email email) {
@@ -47,5 +53,21 @@ public class UserService extends EntityService<User, String, UserRepository> {
             user.setPassword(password);
             put(user);
         }
+    }
+
+    @Override
+    public void delete(User entity) {
+        Objects.requireNonNull(entity);
+        offerService.deleteByCreator(entity);
+        tokenService.deleteByUser(entity);
+        super.delete(entity);
+    }
+
+    @Override
+    public void delete(String identifier) {
+        Objects.requireNonNull(identifier);
+        offerService.deleteByCreator(identifier);
+        tokenService.deleteByUser(identifier);
+        super.delete(identifier);
     }
 }

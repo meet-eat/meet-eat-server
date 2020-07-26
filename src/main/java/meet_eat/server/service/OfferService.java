@@ -6,6 +6,7 @@ import meet_eat.server.repository.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,5 +26,16 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
             return Optional.of(getRepository().findByCreator(creator.get()));
         }
         return Optional.empty();
+    }
+
+    public void deleteByCreator(User creator) {
+        getRepository().deleteByCreator(Objects.requireNonNull(creator));
+    }
+
+    public void deleteByCreator(String creatorId) {
+        Optional<User> optionalCreator = userService.get(creatorId);
+        if (optionalCreator.isPresent()) {
+            deleteByCreator(optionalCreator.get());
+        }
     }
 }

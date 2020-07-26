@@ -69,4 +69,15 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
         Optional<Token> repoToken = getRepository().findById(token.getIdentifier());
         return repoToken.isPresent() && token.equals(repoToken.get());
     }
+
+    public void deleteByUser(User user) {
+        getRepository().deleteByUser(Objects.requireNonNull(user));
+    }
+
+    public void deleteByUser(String userId) {
+        Optional<User> optionalUser = userService.get(userId);
+        if (optionalUser.isPresent()) {
+            deleteByUser(optionalUser.get());
+        }
+    }
 }

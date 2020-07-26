@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface OfferRepository extends MongoRepository<Offer, String> {
 
     public Iterable<Offer> findByCreator(User creator);
+
+    public void deleteByCreator(User creator);
 }
