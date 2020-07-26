@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class SecurityService<T extends Entity> {
 
+    public static final int PASSWORD_ITERATION_COUNT = 500000;
+
     private final TokenService tokenService;
 
     protected SecurityService(TokenService tokenService) {

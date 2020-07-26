@@ -4,6 +4,7 @@ import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.UserRepository;
+import meet_eat.server.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
             PasswordValueSupplier passwordValueSupplier = new PasswordValueSupplier(PASSWORD_BASIC_CHAR_COUNT,
                     PASSWORD_SPECIAL_CHAR_COUNT, PASSWORD_DIGIT_COUNT);
             String passwordValue = passwordValueSupplier.get();
-            Password password = new Password(passwordValue);
+            Password password = Password.createHashedPassword(passwordValue);
 
             // Send an email with the new password to the user.
             EmailService emailService = new EmailService();
@@ -50,9 +51,25 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
             // Write back the new password to the repository.
             User user = optionalUser.get();
-            user.setPassword(password);
+            user.setPassword(password.derive(user.getIdentifier(), SecurityService.PASSWORD_ITERATION_COUNT));
             put(user);
         }
+    }
+
+    @Override
+    public User post(User entity) {
+        Password derivedPassword = entity.getPassword().derive(entity.getIdentifier(), SecurityService.PASSWORD_ITERATION_COUNT);
+        entity.setPassword(derivedPassword);
+        return super.post(entity);
+    }
+
+    @Override
+    public User put(User entity) {
+        if (hasModifiedPassword(entity)) {
+            Password derivedPassword = entity.getPassword().derive(entity.getIdentifier(), SecurityService.PASSWORD_ITERATION_COUNT);
+            entity.setPassword(derivedPassword);
+        }
+        return super.put(entity);
     }
 
     @Override
@@ -85,5 +102,14 @@ public class UserService extends EntityService<User, String, UserRepository> {
         Optional<User> optionalUserByEmail = getByEmail(user.getEmail());
         return optionalUserByEmail.isPresent()
                 && !optionalUserByEmail.get().getIdentifier().equals(user.getIdentifier());
+    }
+
+    private boolean hasModifiedPassword(User user) {
+        Optional<User> optionalPersistentUser = getRepository().findById(user.getIdentifier());
+        if (optionalPersistentUser.isPresent()) {
+            User persistentUser = optionalPersistentUser.get();
+            return !persistentUser.getPassword().equals(user.getPassword());
+        }
+        return false;
     }
 }

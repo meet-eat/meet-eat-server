@@ -6,6 +6,7 @@ import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.TokenRepository;
+import meet_eat.server.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +60,11 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
             return false;
         }
         Optional<User> optionalUser = userService.getByEmail(loginCredential.getEmail());
-        return optionalUser.isPresent() && optionalUser.get().getPassword().equals(loginCredential.getPassword());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return loginCredential.getPassword().matches(user.getPassword(), user.getIdentifier(), SecurityService.PASSWORD_ITERATION_COUNT);
+        }
+        return false;
     }
 
     public boolean isValidToken(Token token) {
