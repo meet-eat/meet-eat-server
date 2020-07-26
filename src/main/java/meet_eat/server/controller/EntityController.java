@@ -60,7 +60,7 @@ public abstract class EntityController<T extends Entity<U>, U, K extends EntityS
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else if (!getSecurityService().isLegalPost(entity, token)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else if (getEntityService().exists(entity.getIdentifier())) {
+        } else if (getEntityService().existsPostConflict(entity)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -71,7 +71,8 @@ public abstract class EntityController<T extends Entity<U>, U, K extends EntityS
     protected ResponseEntity<T> handlePut(U identifier, T entity, Token token) {
         if (Objects.isNull(entity)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (Objects.nonNull(identifier) && !identifier.equals(entity.getIdentifier())) {
+        } else if ((Objects.nonNull(identifier) && !identifier.equals(entity.getIdentifier()))
+                || getEntityService().existsPutConflict(entity)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else if (Objects.isNull(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

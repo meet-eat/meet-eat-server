@@ -70,4 +70,20 @@ public class UserService extends EntityService<User, String, UserRepository> {
         tokenService.deleteByUser(identifier);
         super.delete(identifier);
     }
+
+    @Override
+    public boolean existsPostConflict(User entity) {
+        return existsEmailConflict(entity) || super.existsPostConflict(entity);
+    }
+
+    @Override
+    public boolean existsPutConflict(User entity) {
+        return existsEmailConflict(entity);
+    }
+
+    private boolean existsEmailConflict(User user) {
+        Optional<User> optionalUserByEmail = getByEmail(user.getEmail());
+        return optionalUserByEmail.isPresent()
+                && !optionalUserByEmail.get().getIdentifier().equals(user.getIdentifier());
+    }
 }
