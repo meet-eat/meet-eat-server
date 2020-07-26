@@ -2,6 +2,7 @@ package meet_eat.server.service.security;
 
 import meet_eat.data.entity.Tag;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.user.Role;
 import meet_eat.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -17,21 +18,21 @@ public class TagSecurityService extends SecurityService<Tag> {
 
     @Override
     public boolean isLegalGet(Token authenticationToken) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return isValidAuthentication(authenticationToken);
     }
 
     @Override
     public boolean isLegalPost(Tag entity, Token authenticationToken) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return isValidAuthentication(authenticationToken) && authenticationToken.getUser().getRole().equals(Role.ADMIN);
     }
 
     @Override
     public boolean isLegalPut(Tag entity, Token authenticationToken) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return isValidAuthentication(authenticationToken) && authenticationToken.getUser().getRole().equals(Role.ADMIN);
     }
 
     @Override
     public boolean isLegalDelete(Tag entity, Token authenticationToken) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return isValidAuthentication(authenticationToken) && authenticationToken.getUser().getRole().equals(Role.ADMIN);
     }
 }
