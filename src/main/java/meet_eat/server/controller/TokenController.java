@@ -7,9 +7,12 @@ import meet_eat.server.service.security.TokenSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 @RestController
 public class TokenController extends EntityController<Token, String, TokenService> {
@@ -24,12 +27,17 @@ public class TokenController extends EntityController<Token, String, TokenServic
         if (!getEntityService().isValidLoginCredential(loginCredential)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
         Token token = getEntityService().createToken(loginCredential);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        return new ResponseEntity<>(token, HttpStatus.CREATED);
     }
 
-    @PostMapping(EndpointPath.LOGOUT)
+    @DeleteMapping(EndpointPath.LOGOUT)
     public ResponseEntity<Void> logout(@RequestBody(required = true) Token token) {
+        if (!getEntityService().exists(token.getIdentifier())) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         getEntityService().delete(token);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
