@@ -26,7 +26,7 @@ public abstract class SecurityService<T extends Entity> {
         return tokenService.isValidToken(authenticationToken);
     }
 
-    public TokenService getTokenService() {
+    protected TokenService getTokenService() {
         return tokenService;
     }
 }
