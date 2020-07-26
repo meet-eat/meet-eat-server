@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Nullable;
+import java.util.Objects;
+
 @RestController
 public class UserController extends EntityController<User, String, UserService> {
 
@@ -43,6 +46,20 @@ public class UserController extends EntityController<User, String, UserService> 
     public ResponseEntity<User> postUser(@RequestBody User user,
                                          @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         return handlePost(user, token);
+    }
+
+    @Override
+    protected ResponseEntity<User> handlePost(User entity, Token token) {
+        if (Objects.isNull(entity)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (!getSecurityService().isLegalPost(entity, token)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else if (getEntityService().exists(entity.getIdentifier())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        User postedUser = getEntityService().post(entity);
+        return new ResponseEntity<>(postedUser, HttpStatus.CREATED);
     }
 
     @PostMapping(EndpointPath.USERS + URI_PATH_SEGMENT_EMAIL)
