@@ -172,3 +172,6 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+# Properties files containing sensitive information
+src/main/resources/application.properties
