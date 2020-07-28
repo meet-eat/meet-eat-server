@@ -6,6 +6,7 @@ import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.UserRepository;
 import meet_eat.server.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -22,12 +23,15 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
     private final OfferService offerService;
     private final TokenService tokenService;
+    private final EmailService emailService;
 
+    @Lazy
     @Autowired
-    public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService) {
+    public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService, EmailService emailService) {
         super(userRepository);
         this.offerService = offerService;
         this.tokenService = tokenService;
+        this.emailService = emailService;
     }
 
     public Optional<User> getByEmail(Email email) {
@@ -45,7 +49,6 @@ public class UserService extends EntityService<User, String, UserRepository> {
             Password password = Password.createHashedPassword(passwordValue);
 
             // Send an email with the new password to the user.
-            EmailService emailService = new EmailService();
             String emailText = String.format(PASSWORD_RESET_TEXT_TEMPLATE, passwordValue);
             emailService.sendEmail(userEmail, PASSWORD_RESET_SUBJECT, emailText);
 

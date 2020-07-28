@@ -8,6 +8,7 @@ import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.TokenRepository;
 import meet_eat.server.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -23,6 +24,7 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
 
     private final UserService userService;
 
+    @Lazy
     @Autowired
     public TokenService(TokenRepository tokenRepository, UserService userService) {
         super(tokenRepository);
