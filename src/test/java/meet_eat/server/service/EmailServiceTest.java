@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class EmailServiceTest {
