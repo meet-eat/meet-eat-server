@@ -29,7 +29,7 @@ public final class AnonymizationService {
         Set<User> subscriptions = user.getSubscriptions().stream().map(x -> anonymize(x)).collect(Collectors.toSet());
         Set<Offer> bookmarks = user.getBookmarks().stream().map(x -> anonymize(x)).collect(Collectors.toSet());
         Password password = anonymize(user.getPassword());
-        return new User(user.getIdentifier(), reports, ratings, subscriptions, user.getSettings(), user.getPredicates(),
+        return new User(user.getIdentifier(), reports, ratings, subscriptions, user.getSettings(),
                 bookmarks, user.getRole(), user.getEmail(), password, user.getBirthDay(), user.getName(),
                 user.getPhoneNumber(), user.getDescription(), user.isVerified());
     }
@@ -37,8 +37,8 @@ public final class AnonymizationService {
     public static Offer anonymize(Offer offer) {
         Collection<Report> reports = offer.getReports().stream().map(x -> anonymize(x)).collect(Collectors.toList());
         User creator = anonymize(offer.getCreator());
-        Collection<User> participants = offer.getParticipants().stream().map(x -> anonymize(x)).collect(Collectors.toList());
-        Collection<Tag> tags = offer.getTags().stream().map(x -> anonymize(x)).collect(Collectors.toList());
+        Set<User> participants = offer.getParticipants().stream().map(x -> anonymize(x)).collect(Collectors.toSet());
+        Set<Tag> tags = offer.getTags().stream().map(x -> anonymize(x)).collect(Collectors.toSet());
         return new Offer(offer.getIdentifier(), reports, creator, participants, tags, offer.getName(),
                 offer.getDescription(), offer.getPrice(), offer.getMaxParticipants(), offer.getDateTime(),
                 offer.getLocation());
