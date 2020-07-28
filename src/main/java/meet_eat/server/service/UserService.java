@@ -15,6 +15,7 @@ import java.util.Optional;
 @Service
 public class UserService extends EntityService<User, String, UserRepository> {
 
+    private static final Email EMAIL_SENDER = new Email("noreply.meet.eat@gmail.com");
     private static final String PASSWORD_RESET_SUBJECT = "Meet & Eat Password Reset";
     private static final String PASSWORD_RESET_TEXT_TEMPLATE = "Your new password is %s.";
     private static final int PASSWORD_BASIC_CHAR_COUNT = 25;
@@ -50,7 +51,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
             // Send an email with the new password to the user.
             String emailText = String.format(PASSWORD_RESET_TEXT_TEMPLATE, passwordValue);
-            emailService.sendEmail(userEmail, PASSWORD_RESET_SUBJECT, emailText);
+            emailService.sendEmail(EMAIL_SENDER, userEmail, PASSWORD_RESET_SUBJECT, emailText);
 
             // Write back the new password to the repository.
             User user = optionalUser.get();
