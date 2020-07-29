@@ -3,15 +3,13 @@ package meet_eat.server.service;
 import meet_eat.data.entity.Tag;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-
 public class TagServiceTest extends EntityServiceTest<TagService, Tag, String> {
 
-    private static int TAG_COUNT = 0;
+    private static int tagCount = 0;
 
     @Override
     protected Tag createDistinctTestEntity() {
-        return new Tag("TestTag" + TAG_COUNT++);
+        return new Tag("TestTag" + tagCount++);
     }
 
     @Test(expected = EntityConflictException.class)
