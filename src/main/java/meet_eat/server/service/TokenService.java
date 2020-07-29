@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.TokenRepository;
 import meet_eat.server.service.security.SecurityService;
@@ -20,7 +21,6 @@ import java.util.Optional;
 public class TokenService extends EntityService<Token, String, TokenRepository> {
 
     private static final String ERROR_MESSAGE_INVALID_LOGIN_CREDENTIALS = "Given login credentials must be valid.";
-    private static final int SALT_BYTE_LENGTH = 16;
 
     private final UserService userService;
 
@@ -40,15 +40,11 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
         }
 
         // Generate a random salt for the token hash value
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[SALT_BYTE_LENGTH];
-        random.nextBytes(salt);
+        String salt = Password.generateSalt();
 
         // Concat the salt's bytes, email and current time to get a string with "high entropy", randomness respectively.
         StringBuilder stringBuilder = new StringBuilder();
-        for (byte elem : salt) {
-            stringBuilder.append(elem);
-        }
+        stringBuilder.append(salt);
         stringBuilder.append(loginCredential.getEmail());
         stringBuilder.append(LocalDateTime.now());
 
@@ -64,7 +60,7 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
         Optional<User> optionalUser = userService.getByEmail(loginCredential.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return loginCredential.getPassword().matches(user.getPassword(), user.getIdentifier(), SecurityService.PASSWORD_ITERATION_COUNT);
+            return loginCredential.getPassword().matches(user.getPassword());
         }
         return false;
     }

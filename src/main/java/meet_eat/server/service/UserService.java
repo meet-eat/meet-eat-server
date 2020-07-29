@@ -62,7 +62,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
     @Override
     public User post(User entity) {
-        Password derivedPassword = entity.getPassword().derive(entity.getIdentifier(), SecurityService.PASSWORD_ITERATION_COUNT);
+        Password derivedPassword = entity.getPassword().derive(Password.generateSalt(), SecurityService.PASSWORD_ITERATION_COUNT);
         entity.setPassword(derivedPassword);
         return super.post(entity);
     }
