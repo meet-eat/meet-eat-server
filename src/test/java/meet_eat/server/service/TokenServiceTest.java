@@ -2,6 +2,7 @@ package meet_eat.server.service;
 
 import static org.junit.Assert.*;
 
+import com.google.common.collect.Iterables;
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.Email;
@@ -57,6 +58,12 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
         assertTrue(getEntityService().getRepository().existsById(token.getIdentifier()));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testCreateTokenNull() {
+        // Execution
+        Token token = getEntityService().createToken(null);
+    }
+
     @Test
     public void testIsValidLoginCredential() {
         // Test data
@@ -79,13 +86,52 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     }
 
     @Test
+    public void testIsValidLoginCredentialWithUnknownEmail() {
+        // Test data
+        LoginCredential loginCredential = new LoginCredential(new Email("unknown@example.com"), PASSWORD_VALID);
+
+        // Assertions
+        assertFalse(getEntityService().isValidLoginCredential(loginCredential));
+    }
+
+    @Test
+    public void testIsValidLoginCredentialNull() {
+        // Assertions
+        assertFalse(getEntityService().isValidLoginCredential(null));
+    }
+
+    @Test
     public void testIsValidToken() {
         // Execution
         Token token = getEntityService().post(createDistinctTestEntity());
 
         // Assertions
         assertTrue(getEntityService().isValidToken(token));
+    }
 
+    @Test
+    public void testIsValidTokenDeleted() {
+        // Execution
+        Token token = getEntityService().post(createDistinctTestEntity());
+        getEntityService().delete(token);
+
+        // Assertions
+        assertFalse(getEntityService().isValidToken(token));
+    }
+
+    @Test
+    public void testIsValidTokenNull() {
+        // Assertions
+        assertFalse(getEntityService().isValidToken(null));
+    }
+
+    @Test
+    public void testIsValidTokenWithoutIdentifier() {
+        // Execution
+        Token token = createDistinctTestEntity();
+
+        // Assertions
+        assertFalse(getEntityService().isValidToken(token));
     }
 
     @Test
@@ -97,13 +143,59 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
         // Assertions
         assertTrue(getEntityService().isValidToken(token));
         assertFalse(getEntityService().isValidToken(modifiedToken));
+    }
 
+    @Test
+    public void testDeleteByUserEntity() {
+        // Test data
+        User user = getRepoUserShuffled();
+        Token tokenFst = new Token(user, "ABC");
+        Token tokenSnd = new Token(user, "EFG");
+
+        // Execution
+        Token postedTokenFst = getEntityService().post(tokenFst);
+        Token postedTokenSnd = getEntityService().post(tokenSnd);
+        getEntityService().deleteByUser(user);
+
+        // Assertions: Post-Deletion
+        assertTrue(Iterables.isEmpty(getEntityService().getAll()));
+        assertFalse(getEntityService().exists(postedTokenFst.getIdentifier()));
+        assertFalse(getEntityService().exists(postedTokenSnd.getIdentifier()));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testDeleteByUserEntityNull() {
+        // Execution
+        getEntityService().deleteByUser((User) null);
+    }
+
+    @Test
+    public void testDeleteByUserIdentifier() {
+        // Test data
+        User user = getRepoUserShuffled();
+        Token tokenFst = new Token(user, "ABC");
+        Token tokenSnd = new Token(user, "EFG");
+
+        // Execution
+        Token postedTokenFst = getEntityService().post(tokenFst);
+        Token postedTokenSnd = getEntityService().post(tokenSnd);
+        getEntityService().deleteByUser(user.getIdentifier());
+
+        // Assertions: Post-Deletion
+        assertTrue(Iterables.isEmpty(getEntityService().getAll()));
+        assertFalse(getEntityService().exists(postedTokenFst.getIdentifier()));
+        assertFalse(getEntityService().exists(postedTokenSnd.getIdentifier()));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testDeleteByUserIdentifierNull() {
+        // Execution
+        getEntityService().deleteByUser((String) null);
     }
 
     @Override
     protected Token createDistinctTestEntity() {
         User user = getRepoUserShuffled();
-        System.out.println(user.getIdentifier());
         return new Token(user, String.valueOf(tokenCount++));
     }
 
