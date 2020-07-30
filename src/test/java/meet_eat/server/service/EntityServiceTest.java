@@ -1,5 +1,6 @@
 package meet_eat.server.service;
 
+import com.google.common.collect.Iterables;
 import meet_eat.data.entity.Entity;
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Iterator;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -34,19 +34,19 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
     @Test(expected = NullPointerException.class)
     public void testPostNull() {
         // Execution
-        S postedEntity = entityService.post(null);
+        entityService.post(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testGetNull() {
         // Execution
-        Optional<S> gotEntity = entityService.get(null);
+        entityService.get(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testPutNull() {
         // Execution
-        S putEntity = entityService.put(null);
+        entityService.put(null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -74,10 +74,9 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
 
         // Execution
         Iterable<S> entities = entityService.getAll();
-        Iterator<S> entityIterator = entities.iterator();
 
         // Assertions: Post-Execution
-        assertFalse(entityIterator.hasNext());
+        assertTrue(Iterables.isEmpty(entities));
     }
 
     @Test
@@ -106,6 +105,44 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
         assertNotNull(optionalGotEntity);
         assertTrue(optionalGotEntity.isPresent());
         assertEquals(postedEntity, optionalGotEntity.get());
+    }
+
+    @Test
+    public void testPostAndGetAll() {
+        // Test data
+        S entity = createDistinctTestEntity();
+
+        // Execution
+        S postedEntity = entityService.post(entity);
+        Iterable<S> gotEntities = getEntityService().getAll();
+
+        // Assertions
+        assertNotNull(gotEntities);
+        assertFalse(Iterables.isEmpty(gotEntities));
+        assertTrue(Iterables.contains(gotEntities, postedEntity));
+    }
+
+    @Test
+    public void testPostMultipleAndGetAll() {
+        // Test data
+        S entityFst = createDistinctTestEntity();
+        S entitySnd = createDistinctTestEntity();
+        S entityTrd = createDistinctTestEntity();
+        int numberOfPosts = 3;
+
+        // Execution
+        S postedEntityFst = entityService.post(entityFst);
+        S postedEntitySnd = entityService.post(entitySnd);
+        S postedEntityTrd = entityService.post(entityTrd);
+        Iterable<S> gotEntities = getEntityService().getAll();
+
+        // Assertions
+        assertNotNull(gotEntities);
+        assertFalse(Iterables.isEmpty(gotEntities));
+        assertEquals(numberOfPosts, Iterables.size(gotEntities));
+        assertTrue(Iterables.contains(gotEntities, postedEntityFst));
+        assertTrue(Iterables.contains(gotEntities, postedEntitySnd));
+        assertTrue(Iterables.contains(gotEntities, postedEntityTrd));
     }
 
     @Test
@@ -159,6 +196,37 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
         // Assertions
         assertFalse(entityService.getRepository().existsById(postedEntity.getIdentifier()));
         assertFalse(entityService.exists(postedEntity.getIdentifier()));
+    }
+
+    @Test
+    public void testPutWithEqualEntities() {
+        // Test data
+        S entity = createDistinctTestEntity();
+
+        // Execution
+        S postedEntity = entityService.post(entity);
+        S putEntity = entityService.put(postedEntity);
+
+        // Assertions
+        assertNotNull(putEntity);
+        assertNotNull(putEntity.getIdentifier());
+        assertEquals(postedEntity, putEntity);
+    }
+
+    @Test
+    public void testPutIdempotence() {
+        // Test data
+        S entity = createDistinctTestEntity();
+
+        // Execution
+        S postedEntity = entityService.post(entity);
+        S putEntity = entityService.put(postedEntity);
+        S twicePutEntity = entityService.put(putEntity);
+
+        // Assertions
+        assertNotNull(twicePutEntity);
+        assertNotNull(twicePutEntity.getIdentifier());
+        assertEquals(putEntity, twicePutEntity);
     }
 
     protected T getEntityService() {
