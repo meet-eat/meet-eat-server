@@ -229,6 +229,21 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
         assertEquals(putEntity, twicePutEntity);
     }
 
+    @Test
+    public void testDeleteIdempotence() {
+        // Test data
+        S entity = createDistinctTestEntity();
+
+        // Execution
+        S postedEntity = entityService.post(entity);
+        entityService.delete(postedEntity);
+        entityService.delete(postedEntity);
+
+        // Assertions
+        assertFalse(entityService.getRepository().existsById(postedEntity.getIdentifier()));
+        assertFalse(entityService.exists(postedEntity.getIdentifier()));
+    }
+
     protected T getEntityService() {
         return entityService;
     }
