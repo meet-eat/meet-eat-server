@@ -92,6 +92,16 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
         assertNotNull(postedEntity.getIdentifier());
     }
 
+    @Test(expected = EntityConflictException.class)
+    public void testPostConflict() {
+        // Test data
+        S entity = createDistinctTestEntity();
+
+        // Execution
+        S postedEntity = entityService.post(entity);
+        entityService.post(postedEntity);
+    }
+
     @Test
     public void testPostAndGet() {
         // Test data
