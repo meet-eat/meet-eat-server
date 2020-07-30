@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 
 public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, String> {
 
-    private static final Password PASSWORD_VALID = Password.createHashedPassword("ABCDEFGhijkl1234!");
     private static int offerCount = 0;
     private static boolean isUserRepoInitialized = false;
     private static boolean isTagRepoInitialized = false;
@@ -38,10 +37,11 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
     @Before
     public void prepareUserRepository() {
         if (!isUserRepoInitialized) {
+            Password validPassword = Password.createHashedPassword("ABCDEFGhijkl1234!");
             userService.getRepository().deleteAll();
             for (int i = 0; i < 5; i++) {
                 User user = new User(new Email("noreply" + i + ".meet.eat@gmail.com"),
-                        PASSWORD_VALID, LocalDate.of(1990, Month.JANUARY, 1),
+                        validPassword, LocalDate.of(1990, Month.JANUARY, 1),
                         "User" + i, "12345" + i, "Description" + i, true);
                 userService.post(user);
             }
