@@ -23,11 +23,8 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
     }
 
     public Optional<Iterable<Offer>> getByCreatorId(String creatorId) {
-        Optional<User> creator = userService.get(creatorId);
-        if (creator.isPresent()) {
-            return Optional.of(getRepository().findByCreator(creator.get()));
-        }
-        return Optional.empty();
+        Optional<User> optionalCreator = userService.get(creatorId);
+        return optionalCreator.map(creator -> getRepository().findByCreator(creator));
     }
 
     public void deleteByCreator(User creator) {
@@ -36,8 +33,6 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
 
     public void deleteByCreator(String creatorId) {
         Optional<User> optionalCreator = userService.get(creatorId);
-        if (optionalCreator.isPresent()) {
-            deleteByCreator(optionalCreator.get());
-        }
+        optionalCreator.ifPresent(this::deleteByCreator);
     }
 }
