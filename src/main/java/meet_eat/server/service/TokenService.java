@@ -50,7 +50,7 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
 
         // Hash the generated string, create the token and insert it into the repository.
         String tokenValue = Hashing.sha256().hashString(stringBuilder, Charsets.UTF_16).toString();
-        return getRepository().insert(new Token(optionalUser.get(), tokenValue));
+        return post(new Token(optionalUser.get(), tokenValue));
     }
 
     public boolean isValidLoginCredential(LoginCredential loginCredential) {
@@ -66,7 +66,7 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
     }
 
     public boolean isValidToken(Token token) {
-        if (Objects.isNull(token)) {
+        if (Objects.isNull(token) || Objects.isNull(token.getIdentifier())) {
             return false;
         }
         Optional<Token> repoToken = getRepository().findById(token.getIdentifier());
@@ -79,8 +79,6 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
 
     public void deleteByUser(String userId) {
         Optional<User> optionalUser = userService.get(userId);
-        if (optionalUser.isPresent()) {
-            deleteByUser(optionalUser.get());
-        }
+        optionalUser.ifPresent(this::deleteByUser);
     }
 }
