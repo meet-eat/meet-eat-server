@@ -61,6 +61,12 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
         entityService.delete((S) null);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void existsPostConflictNull() {
+        // Execution
+        entityService.existsPostConflict(null);
+    }
+
     @Test
     public void testExistsNull() {
         // Assertions
