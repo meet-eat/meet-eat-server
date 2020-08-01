@@ -10,4 +10,4 @@
 rootProject.name = "meet-eat-server"
 
 include("meet-eat-data")
-project(":meet-eat-data").projectDir = file("/lib/meet-eat-data")
+project(":meet-eat-data").projectDir = file("./lib/meet-eat-data/")
