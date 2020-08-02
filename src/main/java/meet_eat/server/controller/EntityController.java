@@ -9,11 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-public abstract class EntityController<T extends Entity<U>, U, K extends EntityService<T, U, ? extends MongoRepository<T, U>>> {
+public abstract class EntityController<T extends Entity<U>, U extends Serializable, K extends EntityService<T, U, ? extends MongoRepository<T, U>>> {
 
     protected static final String PATH_VARIABLE_IDENTIFIER = "identifier";
     protected static final String URI_PATH_SEGMENT_IDENTIFIER = "/{" + PATH_VARIABLE_IDENTIFIER + "}";

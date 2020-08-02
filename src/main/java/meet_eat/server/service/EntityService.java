@@ -4,11 +4,12 @@ import meet_eat.data.entity.Entity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public abstract class EntityService<T extends Entity<U>, U, K extends MongoRepository<T, U>> {
+public abstract class EntityService<T extends Entity<U>, U extends Serializable, K extends MongoRepository<T, U>> {
 
     private final K repository;
 

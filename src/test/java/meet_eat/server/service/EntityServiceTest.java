@@ -10,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S extends Entity<U>, U> {
+public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S extends Entity<U>, U extends Serializable> {
 
     @Autowired
     private T entityService;
