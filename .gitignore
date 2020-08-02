@@ -176,3 +176,8 @@ lint/tmp/
 # Properties files containing sensitive information
 src/main/resources/application.properties
 src/test/resources/application.properties
+
+# Certificate files
+*.pfx
+*.pem
+*.p12
