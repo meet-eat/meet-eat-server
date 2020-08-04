@@ -12,6 +12,8 @@ import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
 import meet_eat.data.location.CityLocation;
 import meet_eat.data.location.Localizable;
+import meet_eat.data.location.SphericalLocation;
+import meet_eat.data.location.SphericalPosition;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -311,8 +313,9 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
 
     private User createDistinctUser(Email email) {
         Password validPassword = Password.createHashedPassword("ABCDEFGhijkl1234!");
+        Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));
         User user = new User(email, validPassword, LocalDate.of(1990, Month.JANUARY, 1),
-                "User" + userCount, "12345" + userCount, "Description" + userCount, true);
+                "User" + userCount, "12345" + userCount, "Description" + userCount, true, validLocalizable);
         userCount++;
         return user;
     }

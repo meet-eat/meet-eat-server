@@ -11,6 +11,8 @@ import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
 import meet_eat.data.location.CityLocation;
 import meet_eat.data.location.Localizable;
+import meet_eat.data.location.SphericalLocation;
+import meet_eat.data.location.SphericalPosition;
 import org.assertj.core.util.Streams;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,11 +40,12 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
     public void prepareUserRepository() {
         if (!isUserRepoInitialized) {
             Password validPassword = Password.createHashedPassword("ABCDEFGhijkl1234!");
+            Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));
             userService.getRepository().deleteAll();
             for (int i = 0; i < 5; i++) {
                 User user = new User(new Email("noreply" + i + ".meet.eat@gmail.com"),
                         validPassword, LocalDate.of(1990, Month.JANUARY, 1),
-                        "User" + i, "12345" + i, "Description" + i, true);
+                        "User" + i, "12345" + i, "Description" + i, true, validLocalizable);
                 userService.post(user);
             }
             isUserRepoInitialized = true;

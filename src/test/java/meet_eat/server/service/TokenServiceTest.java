@@ -8,6 +8,9 @@ import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
+import meet_eat.data.location.Localizable;
+import meet_eat.data.location.SphericalLocation;
+import meet_eat.data.location.SphericalPosition;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,11 @@ import java.util.List;
 public class TokenServiceTest extends EntityServiceTest<TokenService, Token, String> {
 
     private static final Password PASSWORD_VALID = Password.createHashedPassword("ABCDEFGhijkl1234!");
+    private static final Localizable LOCALIZABLE_VALID = new SphericalLocation(new SphericalPosition(0, 0));
     private static final List<User> USERS = Arrays.asList(
-            new User(new Email("noreply1.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1990, Month.JANUARY, 1), "User 1", "12345", "Description1", true),
-            new User(new Email("noreply2.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1980, Month.JANUARY, 1), "User 2", "67890", "Description2", false),
-            new User(new Email("noreply3.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1982, Month.FEBRUARY, 12), "User 3", "10293", "Description3", false)
+            new User(new Email("noreply1.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1990, Month.JANUARY, 1), "User 1", "12345", "Description1", true, LOCALIZABLE_VALID),
+            new User(new Email("noreply2.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1980, Month.JANUARY, 1), "User 2", "67890", "Description2", false, LOCALIZABLE_VALID),
+            new User(new Email("noreply3.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1982, Month.FEBRUARY, 12), "User 3", "10293", "Description3", false, LOCALIZABLE_VALID)
     );
     private static int tokenCount = 0;
     private static boolean isClassInitialized = false;

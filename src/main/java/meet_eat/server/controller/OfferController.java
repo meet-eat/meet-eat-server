@@ -1,8 +1,10 @@
 package meet_eat.server.controller;
 
+import com.google.common.collect.Streams;
 import meet_eat.data.RequestHeaderField;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Token;
+import meet_eat.data.predicate.OfferPredicate;
 import meet_eat.server.service.OfferService;
 import meet_eat.server.service.security.OfferSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class OfferController extends EntityController<Offer, String, OfferService> {
@@ -40,21 +45,37 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     }
 
     @GetMapping(EndpointPath.OFFERS)
-    public ResponseEntity<Iterable<Offer>> getOffersByCreator(@RequestParam(value = REQUEST_PARAM_OWNER) String creatorIdentifier,
-                                                              @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+    public ResponseEntity<Iterable<Offer>> getAllOffersFiltered(
+            @RequestParam(value = REQUEST_PARAM_OWNER, required = false) String creatorIdentifier,
+            @RequestHeader(value = RequestHeaderField.PREDICATES, required = false) Collection<OfferPredicate> predicates,
+            @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+
         if (Objects.isNull(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else if (!getSecurityService().isLegalGet(token)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Optional<Iterable<Offer>> optionalOffers = getEntityService().getByCreatorId(creatorIdentifier);
-        if (optionalOffers.isEmpty()) {
-            // Indicating that the given creatorId does not exist in the user repository.
-            // Therefore, no resource could be found.
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // Get all offers (by certain creator if given).
+        Iterable<Offer> offers;
+        if (Objects.nonNull(creatorIdentifier)) {
+            Optional<Iterable<Offer>> optionalOffers = getEntityService().getByCreatorId(creatorIdentifier);
+            if (optionalOffers.isEmpty()) {
+                // Indicating that the given creatorId does not exist in the user repository.
+                // Therefore, no resource could be found.
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            offers = optionalOffers.get();
+        } else {
+            offers = getEntityService().getAll();
         }
-        return new ResponseEntity<>(optionalOffers.get(), HttpStatus.OK);
+
+        // Filter the offers with given predicates.
+        if (Objects.nonNull(predicates)) {
+            offers = filterOffers(offers, predicates);
+        }
+
+        return new ResponseEntity<>(offers, HttpStatus.OK);
     }
 
     // POST
@@ -86,5 +107,13 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     public ResponseEntity<Void> deleteOffer(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
                                             @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         return handleDelete(identifier, token);
+    }
+
+    private static Iterable<Offer> filterOffers(Iterable<Offer> offers, Collection<OfferPredicate> predicates) {
+        Stream<Offer> offerStream = Streams.stream(offers);
+        for (OfferPredicate predicate : predicates) {
+            offerStream = offerStream.filter(predicate);
+        }
+        return offerStream.collect(Collectors.toList());
     }
 }

@@ -31,7 +31,8 @@ public final class AnonymizationService {
         Password password = anonymize(user.getPassword());
         return new User(user.getIdentifier(), reports, ratings, subscriptions, user.getSettings(),
                 bookmarks, user.getRole(), user.getEmail(), password, user.getBirthDay(), user.getName(),
-                user.getPhoneNumber(), user.getDescription(), user.isVerified());
+                user.getPhoneNumber(), user.getDescription(), user.isVerified(), user.getOfferPredicates(),
+                user.getLocalizable());
     }
 
     public static Offer anonymize(Offer offer) {
