@@ -10,7 +10,6 @@ public class ObjectMapperConfiguration {
 
     @Bean
     public ObjectMapper objectMapper() {
-        ObjectJsonParser objectJsonParser = new ObjectJsonParser();
-        return objectJsonParser.getObjectMapper();
+        return ObjectJsonParser.getDefaultObjectMapper();
     }
 }
