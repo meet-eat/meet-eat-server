@@ -47,8 +47,14 @@ public class TagController extends EntityController<Tag, String, TagService> {
 
     // PUT
 
+    @PutMapping(EndpointPath.TAGS)
+    public ResponseEntity<Tag> putTag(@RequestBody Tag tag,
+                                      @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handlePut(null, tag, token);
+    }
+
     @PutMapping(EndpointPath.TAGS + URI_PATH_SEGMENT_IDENTIFIER)
-    public ResponseEntity<Tag> putTag(@PathVariable(value = PATH_VARIABLE_IDENTIFIER, required = false) String identifier,
+    public ResponseEntity<Tag> putTag(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
                                       @RequestBody Tag tag,
                                       @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         return handlePut(identifier, tag, token);

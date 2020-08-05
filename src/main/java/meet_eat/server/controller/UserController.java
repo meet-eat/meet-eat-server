@@ -73,8 +73,14 @@ public class UserController extends EntityController<User, String, UserService> 
 
     // PUT
 
+    @PutMapping(EndpointPath.USERS)
+    public ResponseEntity<User> putUser(@RequestBody User user,
+                                        @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handlePut(null, user, token);
+    }
+
     @PutMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER)
-    public ResponseEntity<User> putUser(@PathVariable(value = PATH_VARIABLE_IDENTIFIER, required = false) String identifier,
+    public ResponseEntity<User> putUser(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
                                         @RequestBody User user,
                                         @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         return handlePut(identifier, user, token);

@@ -88,8 +88,14 @@ public class OfferController extends EntityController<Offer, String, OfferServic
 
     // PUT
 
+    @PutMapping(EndpointPath.OFFERS)
+    public ResponseEntity<Offer> putOffer(@RequestBody Offer offer,
+                                          @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        return handlePut(null, offer, token);
+    }
+
     @PutMapping(EndpointPath.OFFERS + URI_PATH_SEGMENT_IDENTIFIER)
-    public ResponseEntity<Offer> putOffer(@PathVariable(value = PATH_VARIABLE_IDENTIFIER, required = false) String identifier,
+    public ResponseEntity<Offer> putOffer(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
                                           @RequestBody Offer offer,
                                           @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         return handlePut(identifier, offer, token);
