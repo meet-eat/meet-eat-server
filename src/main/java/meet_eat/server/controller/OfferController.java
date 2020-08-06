@@ -2,6 +2,7 @@ package meet_eat.server.controller;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
+import meet_eat.data.EndpointPath;
 import meet_eat.data.RequestHeaderField;
 import meet_eat.data.comparator.OfferComparator;
 import meet_eat.data.entity.Offer;

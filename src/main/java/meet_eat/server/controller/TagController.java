@@ -1,5 +1,6 @@
 package meet_eat.server.controller;
 
+import meet_eat.data.EndpointPath;
 import meet_eat.data.RequestHeaderField;
 import meet_eat.data.entity.Tag;
 import meet_eat.data.entity.Token;
