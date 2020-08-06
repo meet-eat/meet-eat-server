@@ -1,7 +1,9 @@
 package meet_eat.server.controller;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 import meet_eat.data.RequestHeaderField;
+import meet_eat.data.comparator.OfferComparator;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Token;
 import meet_eat.data.predicate.OfferPredicate;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,9 +47,10 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     }
 
     @GetMapping(EndpointPath.OFFERS)
-    public ResponseEntity<Iterable<Offer>> getAllOffersFiltered(
+    public ResponseEntity<Iterable<Offer>> getAllOffers(
             @RequestParam(value = REQUEST_PARAM_OWNER, required = false) String creatorIdentifier,
             @RequestHeader(value = RequestHeaderField.PREDICATES, required = false) OfferPredicate[] predicates,
+            @RequestHeader(value = RequestHeaderField.COMPARATORS, required = false) OfferComparator comparator,
             @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
 
         if (Objects.isNull(token)) {
@@ -72,6 +76,13 @@ public class OfferController extends EntityController<Offer, String, OfferServic
         // Filter the offers with given predicates.
         if (Objects.nonNull(predicates)) {
             offers = filterOffers(offers, predicates);
+        }
+
+        // Sort the offers with a given comparator
+        if (Objects.nonNull(comparator)) {
+            List<Offer> offerList = Lists.newArrayList(offers);
+            offerList.sort(comparator);
+            offers = offerList;
         }
 
         return new ResponseEntity<>(offers, HttpStatus.OK);
