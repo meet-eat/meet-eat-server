@@ -6,7 +6,7 @@ import meet_eat.server.service.TokenService;
 import org.springframework.stereotype.Service;
 
 @Service
-public abstract class SecurityService<T extends Entity> {
+public abstract class SecurityService<T extends Entity<?>> {
 
     /**
      * Represents the number of iterations used for password derivation
