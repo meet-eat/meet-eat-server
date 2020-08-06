@@ -2,11 +2,15 @@ package meet_eat.server.controller;
 
 import meet_eat.data.entity.Entity;
 import meet_eat.data.entity.Token;
+import meet_eat.data.predicate.OfferPredicate;
+import meet_eat.server.HeaderPropertyEditor;
 import meet_eat.server.service.EntityService;
 import meet_eat.server.service.security.SecurityService;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
@@ -116,5 +120,11 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
 
     public SecurityService<T> getSecurityService() {
         return securityService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Token.class, new HeaderPropertyEditor(Token.class));
+        binder.registerCustomEditor(OfferPredicate.class, new HeaderPropertyEditor(OfferPredicate.class));
     }
 }
