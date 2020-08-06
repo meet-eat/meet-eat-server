@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +34,7 @@ import java.util.stream.Stream;
 public class OfferController extends EntityController<Offer, String, OfferService> {
 
     protected static final String REQUEST_PARAM_OWNER = "owner";
+    protected static final String REQUEST_PARAM_SUBSCRIBER = "subscriber";
 
     @Autowired
     public OfferController(OfferService offerService, OfferSecurityService offerSecurityService) {
@@ -49,6 +52,7 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     @GetMapping(EndpointPath.OFFERS)
     public ResponseEntity<Iterable<Offer>> getAllOffers(
             @RequestParam(value = REQUEST_PARAM_OWNER, required = false) String creatorIdentifier,
+            @RequestParam(value = REQUEST_PARAM_SUBSCRIBER, required = false) String subscriberIdentifier,
             @RequestHeader(value = RequestHeaderField.PREDICATES, required = false) OfferPredicate[] predicates,
             @RequestHeader(value = RequestHeaderField.COMPARATORS, required = false) OfferComparator comparator,
             @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
@@ -61,14 +65,33 @@ public class OfferController extends EntityController<Offer, String, OfferServic
 
         // Get all offers (by certain creator if given).
         Iterable<Offer> offers;
-        if (Objects.nonNull(creatorIdentifier)) {
-            Optional<Iterable<Offer>> optionalOffers = getEntityService().getByCreatorId(creatorIdentifier);
-            if (optionalOffers.isEmpty()) {
-                // Indicating that the given creatorId does not exist in the user repository.
-                // Therefore, no resource could be found.
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (Objects.nonNull(creatorIdentifier) || Objects.nonNull(subscriberIdentifier)) {
+            // Avoid duplicates for creator and subscriber by using a set.
+            Set<Offer> offerSet = new HashSet<>();
+
+            // Get all offers of a certain identified creator
+            if (Objects.nonNull(creatorIdentifier)) {
+                Optional<Iterable<Offer>> optionalOffers = getEntityService().getByCreatorId(creatorIdentifier);
+                if (optionalOffers.isEmpty()) {
+                    // Indicating that the given creatorId does not exist in the user repository.
+                    // Therefore, no resource could be found.
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+                offerSet.addAll(Lists.newLinkedList(optionalOffers.get()));
             }
-            offers = optionalOffers.get();
+
+            // Get all offers of users subscribed by the identified "subscriber" user
+            if (Objects.nonNull(subscriberIdentifier)) {
+                Optional<Iterable<Offer>> optionalOffers = getEntityService().getBySubscriberIdentifier(subscriberIdentifier);
+                if (optionalOffers.isEmpty()) {
+                    // Analogous to the non-existence of a creator.
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+                offerSet.addAll(Lists.newLinkedList(optionalOffers.get()));
+            }
+
+            // Write offers back to iterable
+            offers = offerSet;
         } else {
             offers = getEntityService().getAll();
         }
