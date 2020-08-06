@@ -7,12 +7,10 @@ import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.TokenRepository;
-import meet_eat.server.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,7 +68,9 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
             return false;
         }
         Optional<Token> repoToken = getRepository().findById(token.getIdentifier());
-        return repoToken.isPresent() && token.equals(repoToken.get());
+        return repoToken.isPresent()
+                && token.getValue().equals(repoToken.get().getValue())
+                && token.getUser().getIdentifier().equals(repoToken.get().getUser().getIdentifier());
     }
 
     public void deleteByUser(User user) {
