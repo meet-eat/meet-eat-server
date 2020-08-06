@@ -32,7 +32,7 @@ public class UserSecurityService extends SecurityService<User> {
     @Override
     public boolean isLegalPut(User entity, Token authenticationToken) {
         boolean isAdmin = authenticationToken.getUser().getRole().equals(Role.ADMIN);
-        boolean isEntityOwner = authenticationToken.getUser().equals(entity);
+        boolean isEntityOwner = authenticationToken.getUser().getIdentifier().equals(entity.getIdentifier());
 
         return isValidAuthentication(authenticationToken) && (isAdmin || isEntityOwner);
     }

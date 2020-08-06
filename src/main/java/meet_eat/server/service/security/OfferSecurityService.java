@@ -23,14 +23,14 @@ public class OfferSecurityService extends SecurityService<Offer> {
 
     @Override
     public boolean isLegalPost(Offer entity, Token authenticationToken) {
-        boolean isEntityCreator = authenticationToken.getUser().equals(entity.getCreator());
+        boolean isEntityCreator = authenticationToken.getUser().getIdentifier().equals(entity.getCreator().getIdentifier());
         return isValidAuthentication(authenticationToken) && isEntityCreator;
     }
 
     @Override
     public boolean isLegalPut(Offer entity, Token authenticationToken) {
         boolean isAdmin = authenticationToken.getUser().getRole().equals(Role.ADMIN);
-        boolean isEntityCreator = authenticationToken.getUser().equals(entity.getCreator());
+        boolean isEntityCreator = authenticationToken.getUser().getIdentifier().equals(entity.getCreator().getIdentifier());
 
         return isValidAuthentication(authenticationToken) && (isAdmin || isEntityCreator);
     }
