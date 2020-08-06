@@ -1,6 +1,8 @@
 package meet_eat.server.service;
 
 import meet_eat.data.Report;
+import meet_eat.data.comparator.OfferComparableField;
+import meet_eat.data.comparator.OfferComparator;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Tag;
 import meet_eat.data.entity.Token;
@@ -32,7 +34,7 @@ public final class AnonymizationService {
         return new User(user.getIdentifier(), reports, ratings, subscriptions, user.getSettings(),
                 bookmarks, user.getRole(), user.getEmail(), password, user.getBirthDay(), user.getName(),
                 user.getPhoneNumber(), user.getDescription(), user.isVerified(), user.getOfferPredicates(),
-                user.getLocalizable());
+                user.getOfferComparator(), user.getLocalizable());
     }
 
     public static Offer anonymize(Offer offer) {
