@@ -1,5 +1,6 @@
 package meet_eat.server.controller;
 
+import meet_eat.data.comparator.OfferComparator;
 import meet_eat.data.entity.Entity;
 import meet_eat.data.entity.Token;
 import meet_eat.data.predicate.OfferPredicate;
@@ -125,7 +126,7 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Token.class, new HeaderPropertyEditor(Token.class));
-        binder.registerCustomEditor(OfferPredicate.class, new HeaderPropertyEditor(OfferPredicate.class));
+        binder.registerCustomEditor(OfferComparator.class, new HeaderPropertyEditor(OfferComparator.class));
         binder.registerCustomEditor(OfferPredicate.class, new HeaderPropertyEditor(OfferPredicate.class));
         binder.registerCustomEditor(OfferPredicate[].class, new HeaderPropertyEditor(OfferPredicate[].class));
     }
