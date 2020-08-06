@@ -126,5 +126,6 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Token.class, new HeaderPropertyEditor(Token.class));
         binder.registerCustomEditor(OfferPredicate.class, new HeaderPropertyEditor(OfferPredicate.class));
+        binder.registerCustomEditor(OfferPredicate[].class, new HeaderPropertyEditor(OfferPredicate[].class));
     }
 }
