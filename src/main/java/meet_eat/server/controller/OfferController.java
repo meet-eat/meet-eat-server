@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     @GetMapping(EndpointPath.OFFERS)
     public ResponseEntity<Iterable<Offer>> getAllOffersFiltered(
             @RequestParam(value = REQUEST_PARAM_OWNER, required = false) String creatorIdentifier,
-            @RequestHeader(value = RequestHeaderField.PREDICATES, required = false) Collection<OfferPredicate> predicates,
+            @RequestHeader(value = RequestHeaderField.PREDICATES, required = false) OfferPredicate[] predicates,
             @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
 
         if (Objects.isNull(token)) {
@@ -115,7 +114,7 @@ public class OfferController extends EntityController<Offer, String, OfferServic
         return handleDelete(identifier, token);
     }
 
-    private static Iterable<Offer> filterOffers(Iterable<Offer> offers, Collection<OfferPredicate> predicates) {
+    private static Iterable<Offer> filterOffers(Iterable<Offer> offers, OfferPredicate... predicates) {
         Stream<Offer> offerStream = Streams.stream(offers);
         for (OfferPredicate predicate : predicates) {
             offerStream = offerStream.filter(predicate);
