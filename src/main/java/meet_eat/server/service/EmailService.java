@@ -8,16 +8,32 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+/**
+ * Represents a service class providing email sending functionality.
+ */
 @Service
 public class EmailService {
 
     private final JavaMailSender emailSender;
 
+    /**
+     * Constructs a new instance of {@link EmailService}.
+     *
+     * @param emailSender the mail sender used for email delivery
+     */
     @Autowired
     public EmailService(JavaMailSender emailSender) {
         this.emailSender = emailSender;
     }
 
+    /**
+     * Sends a simple email containing subject and text to a recipient.
+     *
+     * @param sender    the sender of the email
+     * @param recipient the recipient of the email
+     * @param subject   the subject of the email
+     * @param text      the text of the email
+     */
     public void sendEmail(Email sender, Email recipient, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sender.toString());
