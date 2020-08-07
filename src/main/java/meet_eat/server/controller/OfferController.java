@@ -150,7 +150,7 @@ public class OfferController extends EntityController<Offer, String, OfferServic
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         offer.addParticipant(participant);
-        return new ResponseEntity<>(getEntityService().put(offer), HttpStatus.OK);
+        return new ResponseEntity<>(getEntityService().put(offer), HttpStatus.CREATED);
     }
 
     // PUT
