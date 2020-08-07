@@ -5,12 +5,19 @@ import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.Role;
 import meet_eat.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+/**
+ * Represents a service class providing security relevant functionality mainly for {@link Offer offers}.
+ */
 @Service
 public class OfferSecurityService extends SecurityService<Offer> {
 
+    /**
+     * Constructs a new {@link OfferSecurityService} instance.
+     *
+     * @param tokenService the {@link TokenService} to be used by the {@link OfferSecurityService}
+     */
     @Autowired
     protected OfferSecurityService(TokenService tokenService) {
         super(tokenService);
