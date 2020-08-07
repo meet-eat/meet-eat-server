@@ -153,7 +153,7 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
         Localizable location = new CityLocation("Karlsruhe");
         Set<Tag> tags = Sets.newHashSet(tagService.getAll());
         Offer offer = new Offer(creator, tags, "Offer " + offerCount++,
-                "Spaghetti. Mhmmm.", 4.99, 3, dateTime, location);
+                "Spaghetti. Mhmmm.", 4.99, 99, dateTime, location);
         Streams.stream(userService.getAll()).filter(x -> !x.equals(creator)).forEach(offer::addParticipant);
         return offer;
     }

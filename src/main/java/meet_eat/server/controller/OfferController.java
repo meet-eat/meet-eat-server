@@ -184,8 +184,8 @@ public class OfferController extends EntityController<Offer, String, OfferServic
 
     @DeleteMapping(EndpointPath.OFFERS + URI_PATH_SEGMENT_IDENTIFIER + URI_PATH_SEGMENT_PARTICIPANTS)
     public ResponseEntity<Offer> deleteParticipant(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
-                                                 @RequestBody User participant,
-                                                 @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+                                                   @RequestBody User participant,
+                                                   @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         // Check if request is authenticated correctly
         if (Objects.isNull(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -204,10 +204,10 @@ public class OfferController extends EntityController<Offer, String, OfferServic
         Offer offer = optionalOffer.get();
 
         // Remove participant if existent and write back
-        boolean foundAndDeleted = offer.getParticipants().removeIf(x -> x.getIdentifier().equals(participant.getIdentifier()));
-        if (!foundAndDeleted) {
+        if (!offer.getParticipants().contains(participant)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        offer.removeParticipant(participant);
         return new ResponseEntity<>(getEntityService().put(offer), HttpStatus.OK);
     }
 
