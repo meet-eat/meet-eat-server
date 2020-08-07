@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Represents an abstract service class providing security relevant functionality for specific {@link Entity entities}.
+ *
  * @param <T> the type of {@link Entity} this service mainly provides functionality for
  */
 @Service
