@@ -5,6 +5,8 @@ package meet_eat.server.service;
  */
 public class EntityConflictException extends IllegalArgumentException {
 
+    private static final long serialVersionUID = -4813093314350300660L;
+
     /**
      * Constructs a new instance of {@link EntityConflictException}.
      */
