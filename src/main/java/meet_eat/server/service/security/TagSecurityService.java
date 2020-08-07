@@ -5,12 +5,19 @@ import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.Role;
 import meet_eat.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+/**
+ * Represents a service class providing security relevant functionality mainly for {@link Tag tags}.
+ */
 @Service
 public class TagSecurityService extends SecurityService<Tag> {
 
+    /**
+     * Constructs a new {@link TagSecurityService} instance.
+     *
+     * @param tokenService the {@link TokenService} to be used by the {@link TagSecurityService}
+     */
     @Autowired
     protected TagSecurityService(TokenService tokenService) {
         super(tokenService);
