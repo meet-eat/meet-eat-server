@@ -7,6 +7,7 @@ import meet_eat.data.RequestHeaderField;
 import meet_eat.data.comparator.OfferComparator;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.user.User;
 import meet_eat.data.predicate.OfferPredicate;
 import meet_eat.server.service.OfferService;
 import meet_eat.server.service.security.OfferSecurityService;
@@ -36,6 +37,7 @@ public class OfferController extends EntityController<Offer, String, OfferServic
 
     protected static final String REQUEST_PARAM_OWNER = "owner";
     protected static final String REQUEST_PARAM_SUBSCRIBER = "subscriber";
+    private static final String URI_PATH_SEGMENT_PARTICIPANTS = "/participants";
 
     @Autowired
     public OfferController(OfferService offerService, OfferSecurityService offerSecurityService) {
@@ -120,6 +122,37 @@ public class OfferController extends EntityController<Offer, String, OfferServic
         return handlePost(offer, token);
     }
 
+    @PostMapping(EndpointPath.OFFERS + URI_PATH_SEGMENT_IDENTIFIER + URI_PATH_SEGMENT_PARTICIPANTS)
+    public ResponseEntity<Offer> postParticipant(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
+                                                 @RequestBody User participant,
+                                                 @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        // Check if request is authenticated correctly
+        if (Objects.isNull(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (Objects.isNull(participant.getIdentifier())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (!getSecurityService().isValidAuthentication(token)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else if (!token.getUser().getIdentifier().equals(participant.getIdentifier())) {
+            // Avoid adding of other users with foreign token.
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        // Fetch the identified offer
+        Optional<Offer> optionalOffer = getEntityService().get(identifier);
+        if (optionalOffer.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Offer offer = optionalOffer.get();
+
+        // Add participant to offer if there is space left and put it into the repository.
+        if (offer.getParticipants().size() >= offer.getMaxParticipants()) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        offer.addParticipant(participant);
+        return new ResponseEntity<>(getEntityService().put(offer), HttpStatus.OK);
+    }
+
     // PUT
 
     @PutMapping(EndpointPath.OFFERS)
@@ -147,6 +180,35 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     public ResponseEntity<Void> deleteOffer(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
                                             @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         return handleDelete(identifier, token);
+    }
+
+    @DeleteMapping(EndpointPath.OFFERS + URI_PATH_SEGMENT_IDENTIFIER + URI_PATH_SEGMENT_PARTICIPANTS)
+    public ResponseEntity<Offer> deleteParticipant(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String identifier,
+                                                 @RequestBody User participant,
+                                                 @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+        // Check if request is authenticated correctly
+        if (Objects.isNull(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (!getSecurityService().isValidAuthentication(token)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else if (!token.getUser().getIdentifier().equals(participant.getIdentifier())) {
+            // Avoid remove of other users with foreign token.
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        // Fetch the identified offer
+        Optional<Offer> optionalOffer = getEntityService().get(identifier);
+        if (optionalOffer.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Offer offer = optionalOffer.get();
+
+        // Remove participant if existent and write back
+        boolean foundAndDeleted = offer.getParticipants().removeIf(x -> x.getIdentifier().equals(participant.getIdentifier()));
+        if (!foundAndDeleted) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(getEntityService().put(offer), HttpStatus.OK);
     }
 
     private static Iterable<Offer> filterOffers(Iterable<Offer> offers, OfferPredicate... predicates) {
