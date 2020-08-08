@@ -1,7 +1,9 @@
 package meet_eat.server.service;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
 import meet_eat.data.entity.Offer;
+import meet_eat.data.entity.Subscription;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +14,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService extends EntityService<Offer, String, OfferRepository> {
 
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
     @Lazy
     @Autowired
-    public OfferService(OfferRepository offerRepository, UserService userService) {
+    public OfferService(OfferRepository offerRepository, UserService userService, SubscriptionService subscriptionService) {
         super(offerRepository);
         this.userService = userService;
+        this.subscriptionService = subscriptionService;
     }
 
     public Optional<Iterable<Offer>> getByCreatorId(String creatorId) {
@@ -45,8 +50,17 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
         if (optionalSubscriber.isPresent()) {
             Iterable<Offer> offers = new LinkedList<>();
 
-            // Get the offers of every subscribed user.
-            for (User subscribedUser : optionalSubscriber.get().getSubscriptions()) {
+            // Get the subscription for every subscribed user.
+            Iterable<Subscription> subscriptions = subscriptionService.getBySourceUser(optionalSubscriber.get());
+
+            // Stream the subscribed users
+            List<User> subscribedUsers = Streams.stream(subscriptions)
+                    .map(Subscription::getTargetUser)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            // Get the offers of the subscribed users
+            for (User subscribedUser : subscribedUsers) {
                 Optional<Iterable<Offer>> optionalOffersBySubscribed = getByCreatorId(subscribedUser.getIdentifier());
 
                 // Add offers of subscribed user, continue if not present respectively.
