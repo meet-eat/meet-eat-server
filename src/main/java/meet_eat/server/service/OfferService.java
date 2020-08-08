@@ -2,6 +2,7 @@ package meet_eat.server.service;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
+import meet_eat.data.entity.Entity;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Subscription;
 import meet_eat.data.entity.user.User;
@@ -16,12 +17,22 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a service class providing functionality to manage {@link Offer offers} and their state persistence.
+ */
 @Service
 public class OfferService extends EntityService<Offer, String, OfferRepository> {
 
     private final UserService userService;
     private final SubscriptionService subscriptionService;
 
+    /**
+     * Constructs a new instance of {@link OfferService}.
+     *
+     * @param offerRepository     the repository used for persistence operations
+     * @param userService         the service used for operations on and with {@link User} entities
+     * @param subscriptionService the service used for operations on and with {@link Subscription} entities
+     */
     @Lazy
     @Autowired
     public OfferService(OfferRepository offerRepository, UserService userService, SubscriptionService subscriptionService) {
@@ -30,20 +41,42 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
         this.subscriptionService = subscriptionService;
     }
 
+    /**
+     * Gets {@link Offer offers} from the repository identified by their {@link User creator's} identifier.
+     *
+     * @param creatorId the identifier of the offer's creator
+     * @return offers of an identified creator
+     */
     public Optional<Iterable<Offer>> getByCreatorId(String creatorId) {
         Optional<User> optionalCreator = userService.get(creatorId);
         return optionalCreator.map(creator -> getRepository().findByCreator(creator));
     }
 
+    /**
+     * Deletes {@link Offer offers} from the repository identified by their {@link User creator}.
+     *
+     * @param creator the creator of the offers to be deleted
+     */
     public void deleteByCreator(User creator) {
         getRepository().deleteByCreator(Objects.requireNonNull(creator));
     }
 
+    /**
+     * Deletes {@link Offer offers} from the repository identified by their {@link User creator's} identifier.
+     *
+     * @param creatorId the creator's identifier of the offers to be deleted
+     */
     public void deleteByCreator(String creatorId) {
         Optional<User> optionalCreator = userService.get(creatorId);
         optionalCreator.ifPresent(this::deleteByCreator);
     }
 
+    /**
+     * Gets {@link Offer offers} from the repository which were created by subscribed {@link User users} of a given user.
+     *
+     * @param subscriberIdentifier the identifier of the subscriber
+     * @return offers of the subscribed users of an identified subscriber
+     */
     public Optional<Iterable<Offer>> getBySubscriberIdentifier(String subscriberIdentifier) {
         // Get "subscriber" user or return empty if not present.
         Optional<User> optionalSubscriber = userService.get(subscriberIdentifier);
