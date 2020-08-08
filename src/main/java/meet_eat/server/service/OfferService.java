@@ -2,7 +2,6 @@ package meet_eat.server.service;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
-import meet_eat.data.entity.Entity;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Subscription;
 import meet_eat.data.entity.user.User;
