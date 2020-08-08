@@ -16,7 +16,7 @@ public abstract class SecurityService<T extends Entity<?>> {
     /**
      * Represents the number of iterations used for password derivation
      */
-    public static final int PASSWORD_ITERATION_COUNT = 500000;
+    public static final int PASSWORD_ITERATION_COUNT = 100000;
 
     private final TokenService tokenService;
 
