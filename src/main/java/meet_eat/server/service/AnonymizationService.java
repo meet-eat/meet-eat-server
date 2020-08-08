@@ -29,10 +29,9 @@ public final class AnonymizationService {
     public static User anonymize(User user) {
         Collection<Report> reports = user.getReports().stream().map(x -> anonymize(x)).collect(Collectors.toList());
         Collection<Rating> ratings = user.getRatings().stream().map(x -> anonymize(x)).collect(Collectors.toList());
-        Set<User> subscriptions = user.getSubscriptions().stream().map(x -> anonymize(x)).collect(Collectors.toSet());
         Set<Offer> bookmarks = user.getBookmarks().stream().map(x -> anonymize(x)).collect(Collectors.toSet());
         Password password = anonymize(user.getPassword());
-        return new User(user.getIdentifier(), reports, ratings, subscriptions, user.getSettings(),
+        return new User(user.getIdentifier(), reports, ratings, user.getSettings(),
                 bookmarks, user.getRole(), user.getEmail(), password, user.getBirthDay(), user.getName(),
                 user.getPhoneNumber(), user.getDescription(), user.isVerified(), user.getOfferPredicates(),
                 user.getOfferComparator(), user.getLocalizable());
