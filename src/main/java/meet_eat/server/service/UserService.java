@@ -1,5 +1,8 @@
 package meet_eat.server.service;
 
+import meet_eat.data.entity.Offer;
+import meet_eat.data.entity.Subscription;
+import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
@@ -12,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Represents a service class providing functionality to manage {@link User users} and their state persistence.
+ */
 @Service
 public class UserService extends EntityService<User, String, UserRepository> {
 
@@ -27,6 +33,15 @@ public class UserService extends EntityService<User, String, UserRepository> {
     private final EmailService emailService;
     private final SubscriptionService subscriptionService;
 
+    /**
+     * Constructs a new instance of {@link UserService}.
+     *
+     * @param userRepository      the repository used for persistence operations
+     * @param offerService        the service used for operations on and with {@link Offer} entities
+     * @param tokenService        the service used for operations on and with {@link Token} entities
+     * @param emailService        the service used for sending messages via {@link Email}
+     * @param subscriptionService the service used for operations on and with {@link Subscription} entities
+     */
     @Lazy
     @Autowired
     public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService, EmailService emailService, SubscriptionService subscriptionService) {
@@ -37,10 +52,21 @@ public class UserService extends EntityService<User, String, UserRepository> {
         this.subscriptionService = subscriptionService;
     }
 
+    /**
+     * Gets a {@link User user} by {@link Email email} from the repository.
+     *
+     * @param email the {@link Email email} of an user.
+     * @return a user identified by {@link Email email}
+     */
     public Optional<User> getByEmail(Email email) {
         return getRepository().findOneByEmail(Objects.requireNonNull(email));
     }
 
+    /**
+     * Generates a new random {@link Password password} for an {@link User user} and sends it to the given email address.
+     *
+     * @param emailAddress the address to send the password to
+     */
     public void resetPassword(String emailAddress) {
         Email userEmail = new Email(emailAddress);
         Optional<User> optionalUser = getByEmail(userEmail);
@@ -106,12 +132,24 @@ public class UserService extends EntityService<User, String, UserRepository> {
         return existsEmailConflict(entity);
     }
 
+    /**
+     * Signalizes whether an {@link Email email} is already taken by another {@link User user}.
+     *
+     * @param user the user to be checked for email conflict
+     * @return True if an conflict exists, false otherwise
+     */
     private boolean existsEmailConflict(User user) {
         Optional<User> optionalUserByEmail = getByEmail(user.getEmail());
         return optionalUserByEmail.isPresent()
                 && !optionalUserByEmail.get().getIdentifier().equals(user.getIdentifier());
     }
 
+    /**
+     * Signalizes whether the {@link Password password} of an {@link User user} has been modified.
+     *
+     * @param user the user whose password will be checked
+     * @return True if the password has been modified, false otherwise
+     */
     private boolean hasModifiedPassword(User user) {
         Optional<User> optionalPersistentUser = getRepository().findById(user.getIdentifier());
         if (optionalPersistentUser.isPresent()) {
