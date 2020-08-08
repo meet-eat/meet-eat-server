@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 @RestController
@@ -27,6 +26,7 @@ public class UserController extends EntityController<User, String, UserService> 
 
     private static final String PATH_VARIABLE_EMAIL = "email";
     private static final String URI_PATH_SEGMENT_EMAIL = "/{" + PATH_VARIABLE_EMAIL + "}";
+    private static final String URI_PATH_SEGMENT_PASSWORD_RESET = "/password/reset";
 
     @Autowired
     public UserController(UserService userService, UserSecurityService userSecurityService) {
@@ -63,7 +63,7 @@ public class UserController extends EntityController<User, String, UserService> 
         return new ResponseEntity<>(postedUser, HttpStatus.CREATED);
     }
 
-    @PostMapping(EndpointPath.USERS + URI_PATH_SEGMENT_EMAIL)
+    @PostMapping(EndpointPath.USERS + URI_PATH_SEGMENT_EMAIL + URI_PATH_SEGMENT_PASSWORD_RESET)
     public ResponseEntity<User> postPasswordReset(@PathVariable(value = PATH_VARIABLE_EMAIL) String emailAddress) {
         // No errors are sent to the caller in order to avoid brute force searches identifying valid email addresses.
         if (Email.isLegalEmailAddress(emailAddress)) {
