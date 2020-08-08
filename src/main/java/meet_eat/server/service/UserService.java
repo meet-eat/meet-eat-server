@@ -17,8 +17,8 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
     private static final Email EMAIL_SENDER = new Email("noreply.meet.eat@gmail.com");
     private static final String PASSWORD_RESET_SUBJECT = "Meet & Eat Password Reset";
-    private static final String PASSWORD_RESET_TEXT_TEMPLATE = "Your new password is %s.";
-    private static final int PASSWORD_BASIC_CHAR_COUNT = 25;
+    private static final String PASSWORD_RESET_TEXT_TEMPLATE = "Your new password is %s .";
+    private static final int PASSWORD_BASIC_CHAR_COUNT = 15;
     private static final int PASSWORD_SPECIAL_CHAR_COUNT = 2;
     private static final int PASSWORD_DIGIT_COUNT = 5;
 
@@ -57,7 +57,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
             // Write back the new password to the repository.
             User user = optionalUser.get();
-            user.setPassword(password.derive(user.getIdentifier(), SecurityService.PASSWORD_ITERATION_COUNT));
+            user.setPassword(password);
             put(user);
         }
     }
