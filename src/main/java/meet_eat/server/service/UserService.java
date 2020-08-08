@@ -25,14 +25,16 @@ public class UserService extends EntityService<User, String, UserRepository> {
     private final OfferService offerService;
     private final TokenService tokenService;
     private final EmailService emailService;
+    private final SubscriptionService subscriptionService;
 
     @Lazy
     @Autowired
-    public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService, EmailService emailService) {
+    public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService, EmailService emailService, SubscriptionService subscriptionService) {
         super(userRepository);
         this.offerService = offerService;
         this.tokenService = tokenService;
         this.emailService = emailService;
+        this.subscriptionService = subscriptionService;
     }
 
     public Optional<User> getByEmail(Email email) {
@@ -81,6 +83,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
         Objects.requireNonNull(entity);
         offerService.deleteByCreator(entity);
         tokenService.deleteByUser(entity);
+        subscriptionService.deleteByUser(entity);
         super.delete(entity);
     }
 
@@ -89,6 +92,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
         Objects.requireNonNull(identifier);
         offerService.deleteByCreator(identifier);
         tokenService.deleteByUser(identifier);
+        subscriptionService.deleteByUser(identifier);
         super.delete(identifier);
     }
 
