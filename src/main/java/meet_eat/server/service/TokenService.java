@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Represents a service class providing functionality to manage {@link Token tokens} and their state persistence.
+ */
 @Service
 public class TokenService extends EntityService<Token, String, TokenRepository> {
 
@@ -22,6 +25,12 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
 
     private final UserService userService;
 
+    /**
+     * Constructs a new instance of {@link TokenService}.
+     *
+     * @param tokenRepository the repository used for persistence operations
+     * @param userService     the service used for operations on and with {@link User} entities
+     */
     @Lazy
     @Autowired
     public TokenService(TokenRepository tokenRepository, UserService userService) {
@@ -29,6 +38,12 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
         this.userService = userService;
     }
 
+    /**
+     * Creates and returns a new persistent and distinct {@link Token} instance.
+     *
+     * @param loginCredential the {@link LoginCredential} on which the token is based
+     * @return a new persistent {@link Token}
+     */
     public Token createToken(LoginCredential loginCredential) {
         // Check whether the user exists and login credentials are valid.
         Objects.requireNonNull(loginCredential);
@@ -51,6 +66,12 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
         return post(new Token(optionalUser.get(), tokenValue));
     }
 
+    /**
+     * Signalizes whether given {@link LoginCredential loginCredentials} are valid or not.
+     *
+     * @param loginCredential the {@link LoginCredential} to checked for validity
+     * @return True if the {@link LoginCredential} instance is valid, false otherwise
+     */
     public boolean isValidLoginCredential(LoginCredential loginCredential) {
         if (Objects.isNull(loginCredential)) {
             return false;
@@ -63,6 +84,12 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
         return false;
     }
 
+    /**
+     * Signalizes whether a given token is valid or not.
+     *
+     * @param token the token to be checked for validity
+     * @return True if the given token is valid, false otherwise
+     */
     public boolean isValidToken(Token token) {
         if (Objects.isNull(token) || Objects.isNull(token.getIdentifier())) {
             return false;
@@ -73,10 +100,20 @@ public class TokenService extends EntityService<Token, String, TokenRepository> 
                 && token.getUser().getIdentifier().equals(repoToken.get().getUser().getIdentifier());
     }
 
+    /**
+     * Deletes all {@link Token tokens} from the repository identified by their {@link User user}.
+     *
+     * @param user the user of the tokens to be deleted
+     */
     public void deleteByUser(User user) {
         getRepository().deleteByUser(Objects.requireNonNull(user));
     }
 
+    /**
+     * Deletes all {@link Token tokens} from the repository identified by their {@link User user's} identifier.
+     *
+     * @param userId the identifier of the user
+     */
     public void deleteByUser(String userId) {
         Optional<User> optionalUser = userService.get(userId);
         optionalUser.ifPresent(this::deleteByUser);
