@@ -55,22 +55,22 @@ public class SubscriptionService extends EntityService<Subscription, String, Sub
     }
 
     /**
-     * Deletes all {@link Subscription subscriptions} containing a specific {@link User source user}.
+     * Deletes all {@link Subscription subscriptions} containing a specific {@link User user}.
      *
-     * @param sourceUser the source user of the subscriptions to be deleted
+     * @param user the user contained by the subscriptions to be deleted
      */
-    public void deleteByUser(User sourceUser) {
-        Objects.requireNonNull(sourceUser);
-        getRepository().deleteBySourceUserOrTargetUser(sourceUser, sourceUser);
+    public void deleteByUser(User user) {
+        Objects.requireNonNull(user);
+        getRepository().deleteBySourceUserOrTargetUser(user, user);
     }
 
     /**
-     * Deletes all {@link Subscription subscriptions} containing a specific {@link User source user}.
+     * Deletes all {@link Subscription subscriptions} containing a specific {@link User user}.
      *
-     * @param sourceUserId the source user's identifier
+     * @param userId the source user's identifier
      */
-    public void deleteByUser(String sourceUserId) {
-        Optional<User> optionalCreator = userService.get(sourceUserId);
+    public void deleteByUser(String userId) {
+        Optional<User> optionalCreator = userService.get(userId);
         optionalCreator.ifPresent(this::deleteByUser);
     }
 
