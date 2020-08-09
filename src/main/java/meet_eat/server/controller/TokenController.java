@@ -3,7 +3,9 @@ package meet_eat.server.controller;
 import meet_eat.data.EndpointPath;
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Token;
+import meet_eat.server.service.EntityService;
 import meet_eat.server.service.TokenService;
+import meet_eat.server.service.security.SecurityService;
 import meet_eat.server.service.security.TokenSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,16 +15,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
-
+/**
+ * Represents an concrete controller class handling incoming RESTful CRUD requests by providing specific endpoints
+ * especially for {@link Token} entities.
+ */
 @RestController
 public class TokenController extends EntityController<Token, String, TokenService> {
 
+    /**
+     * Constructs a new instance of {@link TokenController}.
+     *
+     * @param tokenService         the {@link EntityService} used by this controller
+     * @param tokenSecurityService the {@link SecurityService} used by this controller
+     */
     @Autowired
     public TokenController(TokenService tokenService, TokenSecurityService tokenSecurityService) {
         super(tokenService, tokenSecurityService);
     }
 
+    /**
+     * Creates a new persistent {@link Token} that can be used for authentication purposes.
+     *
+     * @param loginCredential the {@link LoginCredential} to verify the login request
+     * @return the created token within a {@link ResponseEntity}
+     */
     @PostMapping(EndpointPath.LOGIN)
     public ResponseEntity<Token> login(@RequestBody(required = true) LoginCredential loginCredential) {
         if (!getEntityService().isValidLoginCredential(loginCredential)) {
@@ -33,6 +49,12 @@ public class TokenController extends EntityController<Token, String, TokenServic
         return new ResponseEntity<>(token, HttpStatus.CREATED);
     }
 
+    /**
+     * Deletes a {@link Token} from the persistence layer.
+     *
+     * @param token the token to be deleted
+     * @return a bodiless {@link ResponseEntity}
+     */
     @DeleteMapping(EndpointPath.LOGOUT)
     public ResponseEntity<Void> logout(@RequestBody(required = true) Token token) {
         if (!getEntityService().exists(token.getIdentifier())) {
