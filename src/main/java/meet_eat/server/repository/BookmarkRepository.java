@@ -4,12 +4,14 @@ import meet_eat.data.entity.Bookmark;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.user.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 /**
  * Represents a repository managing persistence of {@link Bookmark} instances.
  */
+@Repository
 public interface BookmarkRepository extends MongoRepository<Bookmark, String> {
 
     /**
