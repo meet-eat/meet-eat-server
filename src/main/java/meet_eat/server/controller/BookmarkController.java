@@ -30,8 +30,6 @@ import java.util.Optional;
 @RestController
 public class BookmarkController extends EntityController<Bookmark, String, BookmarkService> {
 
-    private static final String ENDPOINT_PATH_BOOKMARKS = "/bookmarks";
-
     /**
      * Constructs a new instance of {@link BookmarkController}.
      *
@@ -53,7 +51,7 @@ public class BookmarkController extends EntityController<Bookmark, String, Bookm
      * @param token          the authentication token of the requester
      * @return all requested bookmarks within a {@link ResponseEntity}
      */
-    @GetMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER + ENDPOINT_PATH_BOOKMARKS)
+    @GetMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER + EndpointPath.BOOKMARKS)
     public ResponseEntity<Iterable<Bookmark>> getBookmarksByUser(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String userIdentifier,
                                                                  @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         // Check if authentication is valid
@@ -81,7 +79,7 @@ public class BookmarkController extends EntityController<Bookmark, String, Bookm
      * @param token          the authentication token of the requester
      * @return the posted bookmark within a {@link ResponseEntity}
      */
-    @PostMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER + ENDPOINT_PATH_BOOKMARKS)
+    @PostMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER + EndpointPath.BOOKMARKS)
     public ResponseEntity<Bookmark> postBookmark(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String userIdentifier,
                                                  @RequestBody Bookmark bookmark,
                                                  @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
@@ -102,7 +100,7 @@ public class BookmarkController extends EntityController<Bookmark, String, Bookm
      * @param token          the authentication token of the requester
      * @return a bodiless {@link ResponseEntity}
      */
-    @DeleteMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER + ENDPOINT_PATH_BOOKMARKS)
+    @DeleteMapping(EndpointPath.USERS + URI_PATH_SEGMENT_IDENTIFIER + EndpointPath.BOOKMARKS)
     public ResponseEntity<Void> deleteBookmark(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String userIdentifier,
                                                @RequestBody Bookmark bookmark,
                                                @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
