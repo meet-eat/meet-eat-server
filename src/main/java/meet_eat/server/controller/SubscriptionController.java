@@ -65,7 +65,6 @@ public class SubscriptionController extends EntityController<Subscription, Strin
         // Get the subscriptions of the user
         Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUser(userIdentifier);
         if (optionalSubscriptions.isEmpty()) {
-            System.out.println("No subscriptions found for " + userIdentifier);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(optionalSubscriptions.get(), HttpStatus.OK);
