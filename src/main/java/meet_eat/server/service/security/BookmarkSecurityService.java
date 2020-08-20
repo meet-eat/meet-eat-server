@@ -1,7 +1,7 @@
 package meet_eat.server.service.security;
 
-import meet_eat.data.entity.Bookmark;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.relation.Bookmark;
 import meet_eat.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class BookmarkSecurityService extends SecurityService<Bookmark> {
     @Override
     public boolean isLegalPost(Bookmark entity, Token authenticationToken) {
         return isValidAuthentication(authenticationToken)
-                && Objects.equals(entity.getUser(), authenticationToken.getUser());
+                && Objects.equals(entity.getSource(), authenticationToken.getUser());
     }
 
     @Override

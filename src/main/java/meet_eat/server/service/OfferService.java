@@ -3,7 +3,7 @@ package meet_eat.server.service;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import meet_eat.data.entity.Offer;
-import meet_eat.data.entity.Subscription;
+import meet_eat.data.entity.relation.Subscription;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +87,7 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
 
             // Stream the subscribed users
             List<User> subscribedUsers = Streams.stream(subscriptions)
-                    .map(Subscription::getTargetUser)
+                    .map(Subscription::getTarget)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 

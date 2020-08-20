@@ -1,7 +1,7 @@
 package meet_eat.server.service.security;
 
-import meet_eat.data.entity.Subscription;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.relation.Subscription;
 import meet_eat.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class SubscriptionSecurityService extends SecurityService<Subscription> {
     @Override
     public boolean isLegalPost(Subscription entity, Token authenticationToken) {
         return isValidAuthentication(authenticationToken)
-                && entity.getSourceUser().equals(authenticationToken.getUser());
+                && entity.getSource().equals(authenticationToken.getUser());
     }
 
     @Override

@@ -1,8 +1,8 @@
 package meet_eat.server.service;
 
 import meet_eat.data.entity.Offer;
-import meet_eat.data.entity.Subscription;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.relation.Subscription;
 import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;

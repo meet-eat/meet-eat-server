@@ -1,7 +1,7 @@
 package meet_eat.server.service;
 
-import meet_eat.data.entity.Bookmark;
 import meet_eat.data.entity.Offer;
+import meet_eat.data.entity.relation.Bookmark;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.BookmarkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class BookmarkService extends EntityService<Bookmark, String, BookmarkRep
      * @return all bookmarks containing a specific {@link User user}
      */
     public Iterable<Bookmark> getByUser(User user) {
-        return getRepository().findByUser(Objects.requireNonNull(user));
+        return getRepository().findBySource(Objects.requireNonNull(user));
     }
 
     /**
@@ -62,7 +62,7 @@ public class BookmarkService extends EntityService<Bookmark, String, BookmarkRep
      * @param offer the offer of the bookmarks to be deleted
      */
     public void deleteByOffer(Offer offer) {
-        getRepository().deleteByOffer(Objects.requireNonNull(offer));
+        getRepository().deleteByTarget(Objects.requireNonNull(offer));
     }
 
     /**
@@ -81,7 +81,7 @@ public class BookmarkService extends EntityService<Bookmark, String, BookmarkRep
      * @param user the user of the bookmarks to be deleted
      */
     public void deleteByUser(User user) {
-        getRepository().deleteByUser(Objects.requireNonNull(user));
+        getRepository().deleteBySource(Objects.requireNonNull(user));
     }
 
     /**
@@ -96,7 +96,7 @@ public class BookmarkService extends EntityService<Bookmark, String, BookmarkRep
 
     @Override
     public boolean existsPostConflict(Bookmark entity) {
-        return getRepository().existsByUserAndOffer(entity.getUser(), entity.getOffer())
+        return getRepository().existsBySourceAndTarget(entity.getSource(), entity.getTarget())
                 || super.existsPostConflict(entity);
     }
 }

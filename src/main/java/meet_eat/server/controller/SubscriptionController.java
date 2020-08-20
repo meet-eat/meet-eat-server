@@ -3,8 +3,8 @@ package meet_eat.server.controller;
 import com.google.common.collect.Streams;
 import meet_eat.data.EndpointPath;
 import meet_eat.data.RequestHeaderField;
-import meet_eat.data.entity.Subscription;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.relation.Subscription;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.service.EntityService;
 import meet_eat.server.service.SubscriptionService;
@@ -85,7 +85,7 @@ public class SubscriptionController extends EntityController<Subscription, Strin
     public ResponseEntity<Subscription> postSubscription(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String userIdentifier,
                                                          @RequestBody Subscription subscription,
                                                          @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
-        if (!userIdentifier.equals(subscription.getSourceUser().getIdentifier())) {
+        if (!userIdentifier.equals(subscription.getSource().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return handlePost(subscription, token);
@@ -113,7 +113,7 @@ public class SubscriptionController extends EntityController<Subscription, Strin
 
         // Get the subscription to be deleted
         Optional<Subscription> optionalSubscription = Streams.stream(optionalSubscriptions.get())
-                .filter(x -> x.getTargetUser().equals(subscribedUser))
+                .filter(x -> x.getTarget().equals(subscribedUser))
                 .findFirst();
 
         // Delete if user's subscriptions found and return

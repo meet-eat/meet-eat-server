@@ -2,8 +2,8 @@ package meet_eat.server.controller;
 
 import meet_eat.data.EndpointPath;
 import meet_eat.data.RequestHeaderField;
-import meet_eat.data.entity.Bookmark;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.relation.Bookmark;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.service.BookmarkService;
 import meet_eat.server.service.EntityService;
@@ -83,7 +83,7 @@ public class BookmarkController extends EntityController<Bookmark, String, Bookm
     public ResponseEntity<Bookmark> postBookmark(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String userIdentifier,
                                                  @RequestBody Bookmark bookmark,
                                                  @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
-        if (!userIdentifier.equals(bookmark.getUser().getIdentifier())) {
+        if (!userIdentifier.equals(bookmark.getSource().getIdentifier())) {
             // Signalize a conflict between bookmark's user and path identifier variable
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -104,7 +104,7 @@ public class BookmarkController extends EntityController<Bookmark, String, Bookm
     public ResponseEntity<Void> deleteBookmark(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String userIdentifier,
                                                @RequestBody Bookmark bookmark,
                                                @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
-        if (!userIdentifier.equals(bookmark.getUser().getIdentifier())) {
+        if (!userIdentifier.equals(bookmark.getSource().getIdentifier())) {
             // Signalize a conflict between bookmark's user and path identifier variable
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

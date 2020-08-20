@@ -1,6 +1,6 @@
 package meet_eat.server.service;
 
-import meet_eat.data.entity.Subscription;
+import meet_eat.data.entity.relation.Subscription;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class SubscriptionService extends EntityService<Subscription, String, Sub
      * @return subscriptions containing a specific {@link User source user}
      */
     public Iterable<Subscription> getBySourceUser(User sourceUser) {
-        return getRepository().findBySourceUser(sourceUser);
+        return getRepository().findBySource(sourceUser);
     }
 
     /**
@@ -61,7 +61,7 @@ public class SubscriptionService extends EntityService<Subscription, String, Sub
      */
     public void deleteByUser(User user) {
         Objects.requireNonNull(user);
-        getRepository().deleteBySourceUserOrTargetUser(user, user);
+        getRepository().deleteBySourceOrTarget(user, user);
     }
 
     /**
@@ -87,7 +87,7 @@ public class SubscriptionService extends EntityService<Subscription, String, Sub
      * @return True if the given user pair already exists, false otherwise.
      */
     private boolean existsPair(Subscription subscription) {
-        Optional<Subscription> optionalSubscription = getRepository().findBySourceUserAndTargetUser(subscription.getSourceUser(), subscription.getTargetUser());
+        Optional<Subscription> optionalSubscription = getRepository().findBySourceAndTarget(subscription.getSource(), subscription.getTarget());
         return optionalSubscription.isPresent();
     }
 }
