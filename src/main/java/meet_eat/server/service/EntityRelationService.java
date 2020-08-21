@@ -14,6 +14,7 @@ import java.util.Objects;
  * @param <K> the type of the {@link EntityRelation entity relation}
  * @param <T> the type of the {@link Entity source entity} within the relation
  * @param <S> the type of the {@link Entity target entity} within the relation
+ * @param <U> the type of the {@link EntityRelation entity relation} identifier
  * @param <R> the type of the {@link EntityRelation entity relation} {@link EntityRelationRepository repository}
  */
 public abstract class EntityRelationService<K extends EntityRelation<T, S, U>, T extends Entity<?>,
