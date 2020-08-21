@@ -3,6 +3,7 @@ package meet_eat.server.service.security;
 import meet_eat.data.entity.Token;
 import meet_eat.data.entity.relation.Participation;
 import meet_eat.server.service.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -18,7 +19,8 @@ public class ParticipationSecurityService extends SecurityService<Participation>
      *
      * @param tokenService the {@link TokenService} to be used by the {@link ParticipationSecurityService}
      */
-    protected ParticipationSecurityService(TokenService tokenService) {
+    @Autowired
+    public ParticipationSecurityService(TokenService tokenService) {
         super(tokenService);
     }
 
