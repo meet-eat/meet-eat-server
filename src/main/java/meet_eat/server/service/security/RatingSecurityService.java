@@ -2,6 +2,7 @@ package meet_eat.server.service.security;
 
 import meet_eat.data.entity.Token;
 import meet_eat.data.entity.relation.rating.Rating;
+import meet_eat.data.entity.user.Role;
 import meet_eat.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ public class RatingSecurityService extends SecurityService<Rating> {
 
     @Override
     public boolean isLegalDelete(Rating entity, Token authenticationToken) {
-        return isLegalPost(entity, authenticationToken);
+        return isValidAuthentication(authenticationToken)
+                && Objects.equals(authenticationToken.getUser().getRole(), Role.ADMIN);
     }
 }
