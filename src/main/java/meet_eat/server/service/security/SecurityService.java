@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 /**
  * Represents an abstract service class providing security relevant functionality for specific {@link Entity entities}.
  *
- * @param <T> the type of {@link Entity} this service mainly provides functionality for
+ * @param <T> the type of {@link Entity entity} this service mainly provides functionality for
  */
 @Service
 public abstract class SecurityService<T extends Entity<?>> {
@@ -33,7 +33,7 @@ public abstract class SecurityService<T extends Entity<?>> {
      * Signalizes whether a GET operation authenticated by a given {@link Token token} is legal or not.
      *
      * @param authenticationToken the token used for authentication
-     * @return True if a GET operation is legal with the given token, false otherwise.
+     * @return {@code true} if a GET operation is legal with the given token, {@code false} otherwise.
      */
     public abstract boolean isLegalGet(Token authenticationToken);
 
@@ -43,7 +43,7 @@ public abstract class SecurityService<T extends Entity<?>> {
      *
      * @param entity              the entity to be created by the POST operation
      * @param authenticationToken the token used for authentication
-     * @return True if the POST operation is legal with the given token, false otherwise.
+     * @return {@code true} if the POST operation is legal with the given token, {@code false} otherwise.
      */
     public abstract boolean isLegalPost(T entity, Token authenticationToken);
 
@@ -53,7 +53,7 @@ public abstract class SecurityService<T extends Entity<?>> {
      *
      * @param entity              the entity to be modified by the PUT operation
      * @param authenticationToken the token used for authentication
-     * @return True if the PUT operation is legal with the given token, false otherwise.
+     * @return {@code true} if the PUT operation is legal with the given token, {@code false} otherwise.
      */
     public abstract boolean isLegalPut(T entity, Token authenticationToken);
 
@@ -63,7 +63,7 @@ public abstract class SecurityService<T extends Entity<?>> {
      *
      * @param entity              the entity to be deleted by the DELETE operation
      * @param authenticationToken the token used for authentication
-     * @return True if the DELETE operation is legal with the given token, false otherwise.
+     * @return {@code true} if the DELETE operation is legal with the given token, {@code false} otherwise.
      */
     public abstract boolean isLegalDelete(T entity, Token authenticationToken);
 
@@ -71,7 +71,7 @@ public abstract class SecurityService<T extends Entity<?>> {
      * Signalizes whether a given {@link Token token} is valid and may be used for authentication or not.
      *
      * @param authenticationToken the token that is tested for validity
-     * @return True if the given token is valid, false otherwise.
+     * @return {@code true} if the given token is valid, {@code false} otherwise.
      */
     public boolean isValidAuthentication(Token authenticationToken) {
         return tokenService.isValidToken(authenticationToken);
@@ -80,7 +80,7 @@ public abstract class SecurityService<T extends Entity<?>> {
     /**
      * Gets the {@link TokenService token service} of this {@link SecurityService security service}.
      *
-     * @return The token service.
+     * @return the token service.
      */
     protected TokenService getTokenService() {
         return tokenService;

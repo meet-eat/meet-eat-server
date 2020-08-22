@@ -96,7 +96,7 @@ public abstract class EntityRelationService<K extends EntityRelation<T, S, U>, T
      *
      * @param source the source entity of the relation
      * @param target the target entity of the relation
-     * @return True if the relation exists, false otherwise.
+     * @return {@code true} if the relation exists, {@code false} otherwise.
      */
     public boolean existsBySourceAndTarget(T source, S target) {
         return getRepository().existsBySourceAndTarget(Objects.requireNonNull(source), Objects.requireNonNull(target));

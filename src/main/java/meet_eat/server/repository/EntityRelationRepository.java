@@ -48,7 +48,7 @@ public interface EntityRelationRepository<K extends EntityRelation<T, S, U>, T e
      *
      * @param source the source entity of the relation
      * @param target the target entity of the relation
-     * @return True if the relation exists, false otherwise.
+     * @return {@code true} if the relation exists, {@code false} otherwise.
      */
     public boolean existsBySourceAndTarget(T source, S target);
 

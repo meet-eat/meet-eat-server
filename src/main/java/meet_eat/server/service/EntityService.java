@@ -33,7 +33,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
      * Signalizes whether an {@link Entity} exists for a certain identifier.
      *
      * @param identifier the identifier to check for an entity's existence
-     * @return True if an entity with the given identifier exists, false otherwise.
+     * @return {@code true} if an entity with the given identifier exists, {@code false} otherwise.
      */
     public boolean exists(U identifier) {
         return Objects.nonNull(identifier) && repository.existsById(identifier);
@@ -42,7 +42,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
     /**
      * Gets all existing {@link Entity entities}.
      *
-     * @return All existing entities.
+     * @return all existing entities.
      */
     public Iterable<T> getAll() {
         return repository.findAll();
@@ -52,7 +52,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
      * Gets a specific {@link Entity} identified by the identifier.
      *
      * @param identifier the identifier used for finding a certain entity
-     * @return A certain identified entity.
+     * @return a certain identified entity.
      */
     public Optional<T> get(U identifier) {
         return repository.findById(Objects.requireNonNull(identifier));
@@ -62,7 +62,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
      * Adds an {@link Entity} to the repository.
      *
      * @param entity the entity to be added
-     * @return The exact entity added to the repository.
+     * @return the exact entity added to the repository.
      */
     public T post(T entity) {
         Objects.requireNonNull(entity);
@@ -76,7 +76,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
      * Modifies an {@link Entity} within the repository.
      *
      * @param entity the entity to be modified
-     * @return The exact entity modified within the repository.
+     * @return the exact entity modified within the repository.
      */
     public T put(T entity) {
         Objects.requireNonNull(entity);
@@ -107,7 +107,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
     /**
      * Gets the entity repository of this service.
      *
-     * @return The entity repository.
+     * @return the entity repository.
      */
     public K getRepository() {
         return repository;
@@ -117,7 +117,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
      * Signalizes whether or not an existing {@link Entity} conflicts with a to be created one.
      *
      * @param entity the entity to be created
-     * @return True if an conflict exists, false otherwise.
+     * @return {@code true} if an conflict exists, {@code false} otherwise.
      */
     public boolean existsPostConflict(T entity) {
         return exists(entity.getIdentifier());
@@ -127,7 +127,7 @@ public abstract class EntityService<T extends Entity<U>, U extends Serializable,
      * Signalizes whether or not an existing {@link Entity} conflicts with a to be modified one.
      *
      * @param entity the entity to be modified
-     * @return True if an conflict exists, false otherwise.
+     * @return {@code true} if an conflict exists, {@code false} otherwise.
      */
     public boolean existsPutConflict(T entity) {
         return false;
