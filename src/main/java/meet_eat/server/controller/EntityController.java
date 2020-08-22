@@ -57,7 +57,7 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
      *
      * @param identifier the identifier of the entity to be got
      * @param token      the authentication token of the requester
-     * @return an {@link ResponseEntity} containing the status of the request and the got entity on success
+     * @return a {@link ResponseEntity} containing the status of the request and the got entity on success
      */
     protected ResponseEntity<T> handleGet(U identifier, Token token) {
         if (Objects.isNull(identifier)) {
@@ -79,7 +79,7 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
      * Handles a basic incoming GET(all) request at the {@link EntityController} endpoints.
      *
      * @param token the authentication token of the requester
-     * @return an {@link ResponseEntity} containing the status of the request and the got entities on success
+     * @return a {@link ResponseEntity} containing the status of the request and the got entities on success
      */
     protected ResponseEntity<Iterable<T>> handleGetAll(Token token) {
         if (Objects.isNull(token)) {
@@ -97,7 +97,7 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
      *
      * @param entity the entity to be posted
      * @param token  the authentication token of the requester
-     * @return an {@link ResponseEntity} containing the status of the request and the posted entity on success
+     * @return a {@link ResponseEntity} containing the status of the request and the posted entity on success
      */
     protected ResponseEntity<T> handlePost(T entity, Token token) {
         if (Objects.isNull(entity)) {
@@ -120,7 +120,7 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
      * @param identifier the identifier of the entity to be put
      * @param entity     the entity to be put
      * @param token      the authentication token of the requester
-     * @return an {@link ResponseEntity} containing the status of the request and the put entity on success
+     * @return a {@link ResponseEntity} containing the status of the request and the put entity on success
      */
     protected ResponseEntity<T> handlePut(U identifier, T entity, Token token) {
         if (Objects.isNull(entity)) {
