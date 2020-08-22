@@ -48,8 +48,7 @@ public class RatingService extends EntityRelationService<Rating, User, User, Str
         Iterable<Rating> ratings = getByTarget(user);
         long ratingCount = countRatings(ratings, ratingBasis);
         double roundedRatingAverage = roundToFirstDecimal(averageRatings(ratings, ratingBasis));
-
-        return (ratingCount > MIN_AMOUNT_RATINGS) ? roundedRatingAverage : DEFAULT_NOT_ENOUGH_RATINGS;
+        return (ratingCount >= MIN_AMOUNT_RATINGS) ? roundedRatingAverage : DEFAULT_NOT_ENOUGH_RATINGS;
     }
 
     /**
@@ -104,7 +103,7 @@ public class RatingService extends EntityRelationService<Rating, User, User, Str
     /**
      * Rounds a value to its first decimal.
      *
-     * @param value the rating value
+     * @param value the value to be rounded
      * @return the value rounded to first decimal
      */
     private double roundToFirstDecimal(double value) {
