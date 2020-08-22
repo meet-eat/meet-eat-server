@@ -101,4 +101,9 @@ public abstract class EntityRelationService<K extends EntityRelation<T, S, U>, T
     public boolean existsBySourceAndTarget(T source, S target) {
         return getRepository().existsBySourceAndTarget(Objects.requireNonNull(source), Objects.requireNonNull(target));
     }
+
+    @Override
+    public boolean existsPostConflict(K entity) {
+        return existsBySourceAndTarget(entity.getSource(), entity.getTarget()) || super.existsPostConflict(entity);
+    }
 }
