@@ -2,6 +2,7 @@ package meet_eat.server.controller;
 
 import meet_eat.data.EndpointPath;
 import meet_eat.data.RequestHeaderField;
+import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Token;
 import meet_eat.data.entity.relation.Participation;
 import meet_eat.server.service.ParticipationService;
@@ -42,16 +43,20 @@ public class ParticipationController extends EntityController<Participation, Str
 
     // GET
 
+    /**
+     * Gets all persistent {@link Participation participations} of an identified {@link Offer} from the persistence layer.
+     *
+     * @param offerIdentifier the identifier of the {@link Offer offer} of the participations
+     * @param token           the authentication token of the requester
+     * @return all requested participations within a {@link ResponseEntity}
+     */
     @GetMapping(EndpointPath.OFFERS + URI_PATH_SEGMENT_IDENTIFIER + EndpointPath.PARTICIPATIONS)
-    public ResponseEntity<Iterable<Participation>> getParticipations(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String offerIdentifier,
-                                                                     @RequestBody Participation participation,
-                                                                     @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
+    public ResponseEntity<Iterable<Participation>> getParticipationsByOffer(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String offerIdentifier,
+                                                                            @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         if (Objects.isNull(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else if (!getSecurityService().isLegalGet(token)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else if (Objects.equals(participation.getTarget().getIdentifier(), offerIdentifier)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         Optional<Iterable<Participation>> optionalParticipations = getEntityService().getByOfferIdentifier(offerIdentifier);
@@ -63,6 +68,14 @@ public class ParticipationController extends EntityController<Participation, Str
 
     // POST
 
+    /**
+     * Posts a new {@link Participation participation} into the persistence layer.
+     *
+     * @param offerIdentifier the identifier of the {@link Offer offer} of the participation
+     * @param participation   the participation to be posted
+     * @param token           the authentication token of the requester
+     * @return the posted participation within a {@link ResponseEntity}
+     */
     @PostMapping(EndpointPath.OFFERS + URI_PATH_SEGMENT_IDENTIFIER + EndpointPath.PARTICIPATIONS)
     public ResponseEntity<Participation> postParticipation(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String offerIdentifier,
                                                            @RequestBody Participation participation,
@@ -75,6 +88,14 @@ public class ParticipationController extends EntityController<Participation, Str
 
     // DELETE
 
+    /**
+     * Deletes a {@link Participation participation} from the persistence layer.
+     *
+     * @param offerIdentifier the identifier of the {@link Offer offer} of the participation
+     * @param participation   the participation to be deleted
+     * @param token           the authentication token of the requester
+     * @return a bodiless {@link ResponseEntity}
+     */
     @DeleteMapping(EndpointPath.OFFERS + URI_PATH_SEGMENT_IDENTIFIER + EndpointPath.PARTICIPATIONS)
     public ResponseEntity<Void> deleteParticipation(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String offerIdentifier,
                                                     @RequestBody Participation participation,
