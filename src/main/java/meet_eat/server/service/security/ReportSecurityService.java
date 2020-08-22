@@ -49,6 +49,7 @@ public class ReportSecurityService extends SecurityService<Report> {
 
     @Override
     public boolean isLegalDelete(Report entity, Token authenticationToken) {
-        return isLegalPost(entity, authenticationToken);
+        boolean isAdmin = authenticationToken.getUser().getRole().equals(Role.ADMIN);
+        return isValidAuthentication(authenticationToken) && isAdmin;
     }
 }
