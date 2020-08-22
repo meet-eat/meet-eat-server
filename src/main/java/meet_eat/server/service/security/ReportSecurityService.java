@@ -2,6 +2,7 @@ package meet_eat.server.service.security;
 
 import meet_eat.data.entity.Token;
 import meet_eat.data.entity.relation.Report;
+import meet_eat.data.entity.user.Role;
 import meet_eat.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,10 @@ public class ReportSecurityService extends SecurityService<Report> {
 
     @Override
     public boolean isLegalGet(Token authenticationToken) {
-        return isValidAuthentication(authenticationToken);
+        boolean isModerator = authenticationToken.getUser().getRole().equals(Role.MODERATOR);
+        boolean isAdmin = authenticationToken.getUser().getRole().equals(Role.ADMIN);
+        return isValidAuthentication(authenticationToken)
+                && (isModerator || isAdmin);
     }
 
     @Override
@@ -37,7 +41,10 @@ public class ReportSecurityService extends SecurityService<Report> {
 
     @Override
     public boolean isLegalPut(Report entity, Token authenticationToken) {
-        return false;
+        boolean isModerator = authenticationToken.getUser().getRole().equals(Role.MODERATOR);
+        boolean isAdmin = authenticationToken.getUser().getRole().equals(Role.ADMIN);
+        return isValidAuthentication(authenticationToken)
+                && (isModerator || isAdmin);
     }
 
     @Override
