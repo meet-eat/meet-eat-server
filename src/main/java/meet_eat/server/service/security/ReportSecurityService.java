@@ -41,10 +41,7 @@ public class ReportSecurityService extends SecurityService<Report> {
 
     @Override
     public boolean isLegalPut(Report entity, Token authenticationToken) {
-        boolean isModerator = authenticationToken.getUser().getRole().equals(Role.MODERATOR);
-        boolean isAdmin = authenticationToken.getUser().getRole().equals(Role.ADMIN);
-        return isValidAuthentication(authenticationToken)
-                && (isModerator || isAdmin);
+        return isLegalGet(authenticationToken);
     }
 
     @Override
