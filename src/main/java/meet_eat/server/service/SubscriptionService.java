@@ -76,7 +76,7 @@ public class SubscriptionService extends EntityService<Subscription, String, Sub
 
     @Override
     public boolean existsPostConflict(Subscription entity) {
-        return existsPair(entity) && super.existsPostConflict(entity);
+        return existsPair(entity) || super.existsPostConflict(entity);
     }
 
     /**

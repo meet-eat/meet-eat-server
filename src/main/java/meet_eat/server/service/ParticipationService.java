@@ -44,4 +44,10 @@ public class ParticipationService extends EntityRelationService<Participation, U
         Optional<Offer> optionalOffer = offerService.get(offerIdentifier);
         return optionalOffer.map(this::getByTarget);
     }
+
+    @Override
+    public boolean existsPostConflict(Participation entity) {
+        return getRepository().existsBySourceAndTarget(entity.getSource(), entity.getTarget())
+                || super.existsPostConflict(entity);
+    }
 }
