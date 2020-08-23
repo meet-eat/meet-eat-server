@@ -83,6 +83,16 @@ public class ParticipationController extends EntityController<Participation, Str
         if (!Objects.equals(participation.getTarget().getIdentifier(), offerIdentifier)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+
+        Optional<Boolean> optionalCanParticipate = getEntityService().canParticipate(offerIdentifier);
+        if (optionalCanParticipate.isEmpty()) {
+            // Indicates that no offer with the given offer identifier was found.
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else if (!optionalCanParticipate.get()) {
+            // Indicates that the offer is already full and participating is not possible.
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         return handlePost(participation, token);
     }
 
