@@ -45,6 +45,25 @@ public class ParticipationService extends EntityRelationService<Participation, U
         return optionalOffer.map(this::getByTarget);
     }
 
+    /**
+     * Returns whether it is possible to participate at an identified {@link Offer offer}.
+     * If the given offer identifier cannot be found within the {@link OfferRepository}
+     * an empty {@link Optional} is returned.
+     *
+     * @param offerIdentifier the identifier of the offer
+     * @return {@code true} if {@link Participation participation} at a certain {@link Offer offer} is possible,
+     * {@code false} otherwise.
+     */
+    public Optional<Boolean> canParticipate(String offerIdentifier) {
+        Optional<Offer> optionalOffer = offerService.get(offerIdentifier);
+        if (optionalOffer.isPresent()) {
+            Offer offer = optionalOffer.get();
+            long participantAmount = getRepository().countByTarget(offer);
+            return Optional.of(participantAmount < offer.getMaxParticipants());
+        }
+        return Optional.empty();
+    }
+
     @Override
     public boolean existsPostConflict(Participation entity) {
         return getRepository().existsBySourceAndTarget(entity.getSource(), entity.getTarget())
