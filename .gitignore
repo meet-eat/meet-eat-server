@@ -174,8 +174,8 @@ lint/tmp/
 *.hprof
 
 # Properties files containing sensitive information
-src/main/resources/application.properties
-src/test/resources/application.properties
+src/main/resources/application*.properties
+src/test/resources/application*.properties
 
 # Certificate files
 *.pfx
