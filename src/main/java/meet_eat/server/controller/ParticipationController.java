@@ -80,7 +80,7 @@ public class ParticipationController extends EntityController<Participation, Str
     public ResponseEntity<Participation> postParticipation(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String offerIdentifier,
                                                            @RequestBody Participation participation,
                                                            @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
-        if (Objects.equals(participation.getTarget().getIdentifier(), offerIdentifier)) {
+        if (!Objects.equals(participation.getTarget().getIdentifier(), offerIdentifier)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return handlePost(participation, token);
@@ -100,7 +100,7 @@ public class ParticipationController extends EntityController<Participation, Str
     public ResponseEntity<Void> deleteParticipation(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String offerIdentifier,
                                                     @RequestBody Participation participation,
                                                     @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
-        if (Objects.equals(participation.getTarget().getIdentifier(), offerIdentifier)) {
+        if (!Objects.equals(participation.getTarget().getIdentifier(), offerIdentifier)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return handleDelete(participation, token);
