@@ -106,7 +106,7 @@ public class RatingController extends EntityController<Rating, String, RatingSer
     public ResponseEntity<Rating> postRating(@PathVariable(value = PATH_VARIABLE_IDENTIFIER) String userIdentifier,
                                              @RequestBody Rating rating,
                                              @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
-        if (Objects.equals(rating.getTarget().getIdentifier(), userIdentifier)) {
+        if (!Objects.equals(rating.getTarget().getIdentifier(), userIdentifier)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return handlePost(rating, token);
