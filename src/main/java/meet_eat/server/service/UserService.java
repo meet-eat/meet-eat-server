@@ -32,6 +32,10 @@ public class UserService extends EntityService<User, String, UserRepository> {
     private final TokenService tokenService;
     private final EmailService emailService;
     private final SubscriptionService subscriptionService;
+    private final ParticipationService participationService;
+    private final ReportService reportService;
+    private final RatingService ratingService;
+    private final BookmarkService bookmarkService;
 
     /**
      * Constructs a new instance of {@link UserService}.
@@ -44,12 +48,19 @@ public class UserService extends EntityService<User, String, UserRepository> {
      */
     @Lazy
     @Autowired
-    public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService, EmailService emailService, SubscriptionService subscriptionService) {
+    public UserService(UserRepository userRepository, OfferService offerService, TokenService tokenService,
+                       EmailService emailService, SubscriptionService subscriptionService,
+                       ParticipationService participationService, ReportService reportService,
+                       RatingService ratingService, BookmarkService bookmarkService) {
         super(userRepository);
         this.offerService = offerService;
         this.tokenService = tokenService;
         this.emailService = emailService;
         this.subscriptionService = subscriptionService;
+        this.participationService = participationService;
+        this.reportService = reportService;
+        this.ratingService = ratingService;
+        this.bookmarkService = bookmarkService;
     }
 
     /**
@@ -107,18 +118,37 @@ public class UserService extends EntityService<User, String, UserRepository> {
     @Override
     public void delete(User entity) {
         Objects.requireNonNull(entity);
+
+        // Cascading deletion of non-relation entities
         offerService.deleteByCreator(entity);
         tokenService.deleteByUser(entity);
+
+        // Cascading deletion of relation entities
         subscriptionService.deleteByUser(entity);
+        bookmarkService.deleteByUser(entity);
+        participationService.deleteBySource(entity);
+        reportService.deleteBySourceOrTarget(entity, entity);
+        ratingService.deleteBySourceOrTarget(entity, entity);
+
         super.delete(entity);
     }
 
     @Override
     public void delete(String identifier) {
         Objects.requireNonNull(identifier);
+
+        // Cascading deletion of non-relation entities
         offerService.deleteByCreator(identifier);
         tokenService.deleteByUser(identifier);
-        subscriptionService.deleteByUser(identifier);
+
+        // Cascading deletion of relations
+        Optional<User> optionalUser = get(identifier);
+        optionalUser.ifPresent(subscriptionService::deleteByUser);
+        optionalUser.ifPresent(bookmarkService::deleteByUser);
+        optionalUser.ifPresent(participationService::deleteBySource);
+        optionalUser.ifPresent(user -> reportService.deleteBySourceOrTarget(user, user));
+        optionalUser.ifPresent(user -> ratingService.deleteBySourceOrTarget(user, user));
+
         super.delete(identifier);
     }
 
