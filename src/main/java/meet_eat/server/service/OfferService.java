@@ -24,6 +24,10 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
 
     private final UserService userService;
     private final SubscriptionService subscriptionService;
+    private final BookmarkService bookmarkService;
+    private final ParticipationService participationService;
+    private final ReportService reportService;
+    private final RatingService ratingService;
 
     /**
      * Constructs a new instance of {@link OfferService}.
@@ -34,10 +38,16 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
      */
     @Lazy
     @Autowired
-    public OfferService(OfferRepository offerRepository, UserService userService, SubscriptionService subscriptionService) {
+    public OfferService(OfferRepository offerRepository, UserService userService, SubscriptionService subscriptionService,
+                        BookmarkService bookmarkService, ParticipationService participationService,
+                        ReportService reportService, RatingService ratingService) {
         super(offerRepository);
         this.userService = userService;
         this.subscriptionService = subscriptionService;
+        this.bookmarkService = bookmarkService;
+        this.participationService = participationService;
+        this.reportService = reportService;
+        this.ratingService = ratingService;
     }
 
     /**
@@ -49,6 +59,33 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
     public Optional<Iterable<Offer>> getByCreatorId(String creatorId) {
         Optional<User> optionalCreator = userService.get(creatorId);
         return optionalCreator.map(creator -> getRepository().findByCreator(creator));
+    }
+
+    @Override
+    public void delete(Offer entity) {
+        Objects.requireNonNull(entity);
+
+        // Cascading deletion of relation entities
+        bookmarkService.deleteByOffer(entity);
+        participationService.deleteByTarget(entity);
+        reportService.deleteByTarget(entity);
+        ratingService.deleteByOffer(entity);
+
+        super.delete(entity);
+    }
+
+    @Override
+    public void delete(String identifier) {
+        Objects.requireNonNull(identifier);
+
+        // Cascading deletion of relation entities
+        Optional<Offer> optionalOffer = get(identifier);
+        optionalOffer.ifPresent(bookmarkService::deleteByOffer);
+        optionalOffer.ifPresent(participationService::deleteByTarget);
+        optionalOffer.ifPresent(reportService::deleteByTarget);
+        optionalOffer.ifPresent(ratingService::deleteByOffer);
+
+        super.delete(identifier);
     }
 
     /**
