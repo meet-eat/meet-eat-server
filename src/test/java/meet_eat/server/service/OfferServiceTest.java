@@ -152,9 +152,7 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
         LocalDateTime dateTime = LocalDateTime.of(2020, Month.JULY, 30, 12, 32);
         Localizable location = new CityLocation("Karlsruhe");
         Set<Tag> tags = Sets.newHashSet(tagService.getAll());
-        Offer offer = new Offer(creator, tags, "Offer " + offerCount++,
+        return new Offer(creator, tags, "Offer " + offerCount++,
                 "Spaghetti. Mhmmm.", 4.99, 99, dateTime, location);
-        Streams.stream(userService.getAll()).filter(x -> !x.equals(creator)).forEach(offer::addParticipant);
-        return offer;
     }
 }
