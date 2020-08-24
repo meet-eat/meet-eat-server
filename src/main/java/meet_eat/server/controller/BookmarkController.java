@@ -62,7 +62,7 @@ public class BookmarkController extends EntityController<Bookmark, String, Bookm
         }
 
         // Get the bookmarks of the user
-        Optional<Iterable<Bookmark>> optionalBookmarks = getEntityService().getByUser(userIdentifier);
+        Optional<Iterable<Bookmark>> optionalBookmarks = getEntityService().getByUserIdentifier(userIdentifier);
         if (optionalBookmarks.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

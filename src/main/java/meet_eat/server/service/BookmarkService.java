@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -16,10 +15,9 @@ import java.util.Optional;
  * persistence.
  */
 @Service
-public class BookmarkService extends EntityService<Bookmark, String, BookmarkRepository> {
+public class BookmarkService extends EntityRelationService<Bookmark, User, Offer, String, BookmarkRepository> {
 
     private final UserService userService;
-    private final OfferService offerService;
 
     /**
      * Constructs a new instance of {@link BookmarkService}.
@@ -28,20 +26,9 @@ public class BookmarkService extends EntityService<Bookmark, String, BookmarkRep
      */
     @Lazy
     @Autowired
-    public BookmarkService(BookmarkRepository repository, UserService userService, OfferService offerService) {
+    public BookmarkService(BookmarkRepository repository, UserService userService) {
         super(repository);
         this.userService = userService;
-        this.offerService = offerService;
-    }
-
-    /**
-     * Gets all {@link Bookmark bookmarks} containing a specific {@link User user}.
-     *
-     * @param user the user of the bookmarks to be returned
-     * @return all bookmarks containing a specific {@link User user}
-     */
-    public Iterable<Bookmark> getByUser(User user) {
-        return getRepository().findBySource(Objects.requireNonNull(user));
     }
 
     /**
@@ -51,47 +38,9 @@ public class BookmarkService extends EntityService<Bookmark, String, BookmarkRep
      * @param userIdentifier the user's identifier
      * @return all bookmarks containing a specific {@link User user}
      */
-    public Optional<Iterable<Bookmark>> getByUser(String userIdentifier) {
+    public Optional<Iterable<Bookmark>> getByUserIdentifier(String userIdentifier) {
         Optional<User> optionalCreator = userService.get(userIdentifier);
-        return optionalCreator.map(this::getByUser);
-    }
-
-    /**
-     * Deletes all {@link Bookmark bookmarks} containing a specific {@link Offer offer}.
-     *
-     * @param offer the offer of the bookmarks to be deleted
-     */
-    public void deleteByOffer(Offer offer) {
-        getRepository().deleteByTarget(Objects.requireNonNull(offer));
-    }
-
-    /**
-     * Deletes all {@link Bookmark bookmarks} containing a specific {@link Offer offer}.
-     *
-     * @param offerIdentifier the offer's identifier
-     */
-    public void deleteByOffer(String offerIdentifier) {
-        Optional<Offer> optionalCreator = offerService.get(offerIdentifier);
-        optionalCreator.ifPresent(this::deleteByOffer);
-    }
-
-    /**
-     * Deletes all {@link Bookmark bookmarks} containing a specific {@link User user}.
-     *
-     * @param user the user of the bookmarks to be deleted
-     */
-    public void deleteByUser(User user) {
-        getRepository().deleteBySource(Objects.requireNonNull(user));
-    }
-
-    /**
-     * Deletes all {@link Bookmark bookmarks} containing a specific {@link User user}.
-     *
-     * @param userIdentifier the user's identifier
-     */
-    public void deleteByUser(String userIdentifier) {
-        Optional<User> optionalCreator = userService.get(userIdentifier);
-        optionalCreator.ifPresent(this::deleteByUser);
+        return optionalCreator.map(this::getBySource);
     }
 
     @Override

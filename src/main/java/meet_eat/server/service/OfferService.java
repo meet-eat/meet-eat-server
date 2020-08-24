@@ -66,7 +66,7 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
         Objects.requireNonNull(entity);
 
         // Cascading deletion of relation entities
-        bookmarkService.deleteByOffer(entity);
+        bookmarkService.deleteByTarget(entity);
         participationService.deleteByTarget(entity);
         reportService.deleteByTarget(entity);
         ratingService.deleteByOffer(entity);
@@ -80,7 +80,7 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
 
         // Cascading deletion of relation entities
         Optional<Offer> optionalOffer = get(identifier);
-        optionalOffer.ifPresent(bookmarkService::deleteByOffer);
+        optionalOffer.ifPresent(bookmarkService::deleteByTarget);
         optionalOffer.ifPresent(participationService::deleteByTarget);
         optionalOffer.ifPresent(reportService::deleteByTarget);
         optionalOffer.ifPresent(ratingService::deleteByOffer);
