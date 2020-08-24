@@ -1,7 +1,5 @@
 package meet_eat.server.service;
 
-import static org.junit.Assert.*;
-
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import meet_eat.data.entity.Offer;
@@ -23,6 +21,10 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, String> {
 
