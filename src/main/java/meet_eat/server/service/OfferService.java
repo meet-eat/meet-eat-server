@@ -120,7 +120,7 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
             Iterable<Offer> offers = new LinkedList<>();
 
             // Get the subscription for every subscribed user.
-            Iterable<Subscription> subscriptions = subscriptionService.getBySourceUser(optionalSubscriber.get());
+            Iterable<Subscription> subscriptions = subscriptionService.getBySource(optionalSubscriber.get());
 
             // Stream the subscribed users
             List<User> subscribedUsers = Streams.stream(subscriptions)

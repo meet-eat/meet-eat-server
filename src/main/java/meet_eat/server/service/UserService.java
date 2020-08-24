@@ -124,7 +124,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
         tokenService.deleteByUser(entity);
 
         // Cascading deletion of relation entities
-        subscriptionService.deleteByUser(entity);
+        subscriptionService.deleteBySourceOrTarget(entity, entity);
         bookmarkService.deleteBySource(entity);
         participationService.deleteBySource(entity);
         reportService.deleteBySourceOrTarget(entity, entity);
@@ -143,7 +143,7 @@ public class UserService extends EntityService<User, String, UserRepository> {
 
         // Cascading deletion of relations
         Optional<User> optionalUser = get(identifier);
-        optionalUser.ifPresent(subscriptionService::deleteByUser);
+        optionalUser.ifPresent(user -> subscriptionService.deleteBySourceOrTarget(user, user));
         optionalUser.ifPresent(bookmarkService::deleteBySource);
         optionalUser.ifPresent(participationService::deleteBySource);
         optionalUser.ifPresent(user -> reportService.deleteBySourceOrTarget(user, user));

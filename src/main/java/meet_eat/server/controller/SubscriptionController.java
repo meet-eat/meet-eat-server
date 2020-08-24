@@ -63,7 +63,7 @@ public class SubscriptionController extends EntityController<Subscription, Strin
         }
 
         // Get the subscriptions of the user
-        Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUser(userIdentifier);
+        Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUserIdentifier(userIdentifier);
         if (optionalSubscriptions.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -105,7 +105,7 @@ public class SubscriptionController extends EntityController<Subscription, Strin
                                                                    @RequestBody User subscribedUser,
                                                                    @RequestHeader(value = RequestHeaderField.TOKEN, required = false) Token token) {
         // Get subscriptions of identified user
-        Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUser(userIdentifier);
+        Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUserIdentifier(userIdentifier);
         if (optionalSubscriptions.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
