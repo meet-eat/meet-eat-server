@@ -1,6 +1,7 @@
 package meet_eat.server.service;
 
 import com.google.common.collect.Streams;
+import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.relation.rating.Rating;
 import meet_eat.data.entity.relation.rating.RatingBasis;
 import meet_eat.data.entity.user.User;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -34,6 +36,15 @@ public class RatingService extends EntityRelationService<Rating, User, User, Str
     public RatingService(RatingRepository repository, UserService userService) {
         super(repository);
         this.userService = userService;
+    }
+
+    /**
+     * Deletes all {@link Rating ratings} containing a specific {@link Offer offer}.
+     *
+     * @param offer the offer of the ratings to be deleted
+     */
+    public void deleteByOffer(Offer offer) {
+        getRepository().deleteByOffer(Objects.requireNonNull(offer));
     }
 
     /**
