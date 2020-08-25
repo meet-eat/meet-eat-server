@@ -229,9 +229,11 @@ public class OfferController extends EntityController<Offer, String, OfferServic
      * @param predicates the {@link OfferPredicate predicates} used for filtering
      * @return the filtered offers
      */
-    private static Iterable<Offer> filterOffers(Iterable<Offer> offers, OfferPredicate... predicates) {
+    private Iterable<Offer> filterOffers(Iterable<Offer> offers, OfferPredicate... predicates) {
         Stream<Offer> offerStream = Streams.stream(offers);
         for (OfferPredicate predicate : predicates) {
+            predicate.setNumericRatingGetter(getEntityService()::getNumericHostRating);
+            predicate.setParticipantAmountGetter(getEntityService()::getParticipationAmount);
             offerStream = offerStream.filter(predicate);
         }
         return offerStream.collect(Collectors.toList());
