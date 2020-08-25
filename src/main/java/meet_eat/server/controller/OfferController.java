@@ -52,7 +52,7 @@ public class OfferController extends EntityController<Offer, String, OfferServic
     protected static final String REQUEST_PARAM_SUBSCRIBER = "subscriber";
 
     /**
-     * Constructs a new instace of {@link OfferController}.
+     * Constructs a new instance of {@link OfferController}.
      *
      * @param offerService         the {@link EntityService} used by this controller
      * @param offerSecurityService the {@link SecurityService} used by this controller
