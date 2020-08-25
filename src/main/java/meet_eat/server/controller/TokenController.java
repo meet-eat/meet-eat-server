@@ -34,6 +34,17 @@ public class TokenController extends EntityController<Token, String, TokenServic
     }
 
     /**
+     * Signalizes whether a given {@link Token token} is valid or not.
+     *
+     * @param token the token to be checked for validity
+     * @return {@code true} if the token is valid, {@link false} otherwise
+     */
+    @PostMapping(EndpointPath.TOKENS + EndpointPath.VALIDITY)
+    public ResponseEntity<Boolean> isValidToken(@RequestBody(required = true) Token token) {
+        return new ResponseEntity<>(getEntityService().isValidToken(token), HttpStatus.OK);
+    }
+
+    /**
      * Creates a new persistent {@link Token} that can be used for authentication purposes.
      *
      * @param loginCredential the {@link LoginCredential} to verify the login request
