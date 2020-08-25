@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.relation.Subscription;
+import meet_eat.data.entity.relation.rating.RatingBasis;
 import meet_eat.data.entity.user.User;
 import meet_eat.server.repository.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,5 +142,13 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
             return Optional.of(offers);
         }
         return Optional.empty();
+    }
+
+    public int getParticipationAmount(Offer offer) {
+        return (int) participationService.countByTarget(offer);
+    }
+
+    public double getNumericHostRating(Offer offer) {
+        return ratingService.getRatingValue(offer.getCreator(), RatingBasis.HOST);
     }
 }
