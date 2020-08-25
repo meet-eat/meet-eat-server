@@ -40,7 +40,7 @@ public class TokenController extends EntityController<Token, String, TokenServic
      * @return {@code true} if the token is valid, {@link false} otherwise
      */
     @PostMapping(EndpointPath.TOKENS + EndpointPath.VALIDITY)
-    public ResponseEntity<Boolean> isValidToken(@RequestBody(required = true) Token token) {
+    public ResponseEntity<Boolean> isValidToken(@RequestBody Token token) {
         return new ResponseEntity<>(getEntityService().isValidToken(token), HttpStatus.OK);
     }
 
@@ -51,7 +51,7 @@ public class TokenController extends EntityController<Token, String, TokenServic
      * @return the created token within a {@link ResponseEntity}
      */
     @PostMapping(EndpointPath.LOGIN)
-    public ResponseEntity<Token> login(@RequestBody(required = true) LoginCredential loginCredential) {
+    public ResponseEntity<Token> login(@RequestBody LoginCredential loginCredential) {
         if (!getEntityService().isValidLoginCredential(loginCredential)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -67,7 +67,7 @@ public class TokenController extends EntityController<Token, String, TokenServic
      * @return a bodiless {@link ResponseEntity}
      */
     @DeleteMapping(EndpointPath.LOGOUT)
-    public ResponseEntity<Void> logout(@RequestBody(required = true) Token token) {
+    public ResponseEntity<Void> logout(@RequestBody Token token) {
         if (!getEntityService().exists(token.getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
