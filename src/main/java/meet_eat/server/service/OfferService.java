@@ -166,4 +166,10 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
     public double getNumericHostRating(Offer offer) {
         return ratingService.getRatingValue(offer.getCreator(), RatingBasis.HOST);
     }
+
+    @Override
+    public boolean existsPutConflict(Offer entity) {
+        return super.existsPutConflict(entity)
+                || entity.getMaxParticipants() < getParticipationAmount(entity);
+    }
 }
