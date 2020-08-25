@@ -51,6 +51,26 @@ public abstract class EntityRelationService<K extends EntityRelation<T, S, U>, T
     }
 
     /**
+     * Gets the number of {@link EntityRelation relations} containing a specific {@link Entity source entity}.
+     *
+     * @param source the source entity of the relations to be counted
+     * @return the number of relations containing a specific source entity
+     */
+    public long countBySource(T source) {
+        return getRepository().countBySource(Objects.requireNonNull(source));
+    }
+
+    /**
+     * Gets the number of {@link EntityRelation relations} containing a specific {@link Entity target entity}.
+     *
+     * @param target the target entity of the relations to be counted
+     * @return the number of relations containing a specific target entity
+     */
+    public long countByTarget(S target) {
+        return getRepository().countByTarget(Objects.requireNonNull(target));
+    }
+
+    /**
      * Deletes all {@link EntityRelation relations} containing a specific {@link Entity source entity}.
      *
      * @param source the source entity of the relations to be deleted
