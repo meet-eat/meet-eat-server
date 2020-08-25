@@ -141,6 +141,8 @@ public class OfferController extends EntityController<Offer, String, OfferServic
 
         // Sort the offers with a given comparator
         if (Objects.nonNull(comparator)) {
+            comparator.setHostRatingGetter(getEntityService()::getNumericHostRating);
+            comparator.setParticipantAmountGetter(getEntityService()::getParticipationAmount);
             List<Offer> offerList = Lists.newArrayList(offers);
             offerList.sort(comparator);
             offers = offerList;
