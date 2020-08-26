@@ -54,6 +54,16 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
     }
 
     /**
+     * Gets {@link Offer offers} from the repository identified by their {@link User creator}.
+     *
+     * @param creator the creator of the offers
+     * @return offers of an specific creator
+     */
+    public Iterable<Offer> getByCreator(User creator) {
+        return getRepository().findByCreator(Objects.requireNonNull(creator));
+    }
+
+    /**
      * Gets {@link Offer offers} from the repository identified by their {@link User creator's} identifier.
      *
      * @param creatorId the identifier of the offer's creator
@@ -61,7 +71,7 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
      */
     public Optional<Iterable<Offer>> getByCreatorId(String creatorId) {
         Optional<User> optionalCreator = userService.get(creatorId);
-        return optionalCreator.map(creator -> getRepository().findByCreator(creator));
+        return optionalCreator.map(this::getByCreator);
     }
 
     @Override
@@ -97,7 +107,8 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
      * @param creator the creator of the offers to be deleted
      */
     public void deleteByCreator(User creator) {
-        getRepository().deleteByCreator(Objects.requireNonNull(creator));
+        Iterable<Offer> offers = getByCreator(creator);
+        offers.forEach(this::delete);
     }
 
     /**
