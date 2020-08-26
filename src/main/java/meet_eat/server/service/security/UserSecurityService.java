@@ -32,8 +32,9 @@ public class UserSecurityService extends SecurityService<User> {
     public boolean isLegalPost(User entity, Token authenticationToken) {
         boolean isAuthenticatedAdmin = isValidAuthentication(authenticationToken) &&
                 authenticationToken.getUser().getRole().equals(Role.ADMIN);
+        boolean isBasicUser = entity.getRole().equals(Role.USER);
 
-        return isAuthenticatedAdmin || entity.getRole().equals(Role.USER);
+        return isAuthenticatedAdmin || isBasicUser;
     }
 
     @Override
