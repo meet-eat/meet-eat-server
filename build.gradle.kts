@@ -18,6 +18,9 @@ plugins {
 
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
+
+    // Code coverage
+    jacoco
 }
 
 repositories {
@@ -51,4 +54,18 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClassName = "meet_eat.server.Application"
+}
+
+tasks.test {
+    // Report is always generated after tests run
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    // Tests are required to run before generating the report
+    dependsOn(tasks.test)
+    reports {
+        html.isEnabled = true
+        html.destination = file("${buildDir}/reports/coverage")
+    }
 }
