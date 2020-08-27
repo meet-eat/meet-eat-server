@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest
 public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S extends Entity<U>, U extends Serializable> {
 
-    private static final String PASSWORD_VALID_VALUE = "AbcdefgTest1234!?";
+    protected static final String PASSWORD_VALID_VALUE = "AbcdefgTest1234!?";
 
     private static int userCount = 0;
     private static int offerCount = 0;
