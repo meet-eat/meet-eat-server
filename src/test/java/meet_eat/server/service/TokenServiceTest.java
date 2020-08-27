@@ -6,18 +6,7 @@ import meet_eat.data.entity.Token;
 import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
-import meet_eat.data.location.Localizable;
-import meet_eat.data.location.SphericalLocation;
-import meet_eat.data.location.SphericalPosition;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,35 +14,16 @@ import static org.junit.Assert.assertTrue;
 
 public class TokenServiceTest extends EntityServiceTest<TokenService, Token, String> {
 
-    private static final Password PASSWORD_VALID = Password.createHashedPassword("ABCDEFGhijkl1234!");
-    private static final Localizable LOCALIZABLE_VALID = new SphericalLocation(new SphericalPosition(0, 0));
-    private static final List<User> USERS = Arrays.asList(
-            new User(new Email("noreply1.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1990, Month.JANUARY, 1), "User 1", "12345", "Description1", true, LOCALIZABLE_VALID),
-            new User(new Email("noreply2.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1980, Month.JANUARY, 1), "User 2", "67890", "Description2", false, LOCALIZABLE_VALID),
-            new User(new Email("noreply3.meet.eat@gmail.com"), PASSWORD_VALID, LocalDate.of(1982, Month.FEBRUARY, 12), "User 3", "10293", "Description3", false, LOCALIZABLE_VALID)
-    );
     private static int tokenCount = 0;
-    private static boolean isClassInitialized = false;
-
-    @Autowired
-    private UserService userService;
-
-    @Before
-    public void prepareUserRepository() {
-        if (!isClassInitialized) {
-            userService.getRepository().deleteAll();
-            USERS.forEach(userService::post);
-            isClassInitialized = true;
-        }
-    }
 
     //#region @Test createToken
 
     @Test
     public void testCreateToken() {
         // Test data
-        User user = getRepoUserShuffled();
-        LoginCredential loginCredential = new LoginCredential(user.getEmail(), PASSWORD_VALID);
+        User user = getBasicUserPersistent();
+        Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
+        LoginCredential loginCredential = new LoginCredential(user.getEmail(), password);
 
         // Execution
         Token token = getEntityService().createToken(loginCredential);
@@ -69,7 +39,8 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test(expected = IllegalArgumentException.class)
     public void testCreateTokenUnknownEmail() {
         // Test data
-        LoginCredential loginCredential = new LoginCredential(new Email("moritz@gstuer.com"), PASSWORD_VALID);
+        Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
+        LoginCredential loginCredential = new LoginCredential(new Email("moritz@gstuer.com"), password);
 
         // Execution
         getEntityService().createToken(loginCredential);
@@ -78,7 +49,7 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test(expected = IllegalArgumentException.class)
     public void testCreateTokenWrongPassword() {
         // Test data
-        User user = getRepoUserShuffled();
+        User user = getBasicUserPersistent();
         LoginCredential loginCredential = new LoginCredential(user.getEmail(), Password.createHashedPassword("Invalid!PASSWORD123"));
 
         // Execution
@@ -89,7 +60,7 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test(expected = NullPointerException.class)
     public void testCreateTokenNull() {
         // Execution
-        Token token = getEntityService().createToken(null);
+        getEntityService().createToken(null);
     }
 
     //#endregion
@@ -99,8 +70,9 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test
     public void testIsValidLoginCredential() {
         // Test data
-        User user = getRepoUserShuffled();
-        LoginCredential loginCredential = new LoginCredential(user.getEmail(), PASSWORD_VALID);
+        User user = getBasicUserPersistent();
+        Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
+        LoginCredential loginCredential = new LoginCredential(user.getEmail(), password);
 
         // Assertions
         assertTrue(getEntityService().isValidLoginCredential(loginCredential));
@@ -109,8 +81,8 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test
     public void testIsValidLoginCredentialWithWrongPassword() {
         // Test data
-        User user = getRepoUserShuffled();
-        Password wrongPassword = Password.createHashedPassword("abcdefgAb123!");
+        User user = getBasicUserPersistent();
+        Password wrongPassword = Password.createHashedPassword("TestHelloAb123!");
         LoginCredential loginCredential = new LoginCredential(user.getEmail(), wrongPassword);
 
         // Assertions
@@ -120,7 +92,8 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test
     public void testIsValidLoginCredentialWithUnknownEmail() {
         // Test data
-        LoginCredential loginCredential = new LoginCredential(new Email("unknown@example.com"), PASSWORD_VALID);
+        Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
+        LoginCredential loginCredential = new LoginCredential(new Email("unknown@example.com"), password);
 
         // Assertions
         assertFalse(getEntityService().isValidLoginCredential(loginCredential));
@@ -185,10 +158,7 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     public void testIsValidTokenModifiedUser() {
         // Execution
         Token token = getEntityService().post(createDistinctTestEntity());
-        User otherUser = getRepoUserShuffled();
-        while (otherUser.equals(token.getUser())) {
-            otherUser = getRepoUserShuffled();
-        }
+        User otherUser = getBasicUserPersistent();
         Token modifiedToken = new Token(token.getIdentifier(), otherUser, token.getValue());
 
         // Assertions
@@ -203,7 +173,7 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test
     public void testDeleteByUserEntity() {
         // Test data
-        User user = getRepoUserShuffled();
+        User user = getBasicUserPersistent();
         Token tokenFst = new Token(user, "ABC");
         Token tokenSnd = new Token(user, "EFG");
 
@@ -227,7 +197,7 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     @Test
     public void testDeleteByUserIdentifier() {
         // Test data
-        User user = getRepoUserShuffled();
+        User user = getBasicUserPersistent();
         Token tokenFst = new Token(user, "ABC");
         Token tokenSnd = new Token(user, "EFG");
 
@@ -252,13 +222,7 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
 
     @Override
     protected Token createDistinctTestEntity() {
-        User user = getRepoUserShuffled();
+        User user = getBasicUserPersistent();
         return new Token(user, String.valueOf(tokenCount++));
-    }
-
-    private User getRepoUserShuffled() {
-        List<User> users = userService.getRepository().findAll();
-        Collections.shuffle(users);
-        return users.stream().findFirst().orElseThrow(IllegalStateException::new);
     }
 }
