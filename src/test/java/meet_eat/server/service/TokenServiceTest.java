@@ -1,7 +1,5 @@
 package meet_eat.server.service;
 
-import static org.junit.Assert.*;
-
 import com.google.common.collect.Iterables;
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Token;
@@ -20,6 +18,10 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TokenServiceTest extends EntityServiceTest<TokenService, Token, String> {
 
@@ -45,6 +47,8 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
         }
     }
 
+    //#region @Test createToken
+
     @Test
     public void testCreateToken() {
         // Test data
@@ -62,11 +66,35 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
         assertTrue(getEntityService().getRepository().existsById(token.getIdentifier()));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateTokenUnknownEmail() {
+        // Test data
+        LoginCredential loginCredential = new LoginCredential(new Email("moritz@gstuer.com"), PASSWORD_VALID);
+
+        // Execution
+        getEntityService().createToken(loginCredential);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateTokenWrongPassword() {
+        // Test data
+        User user = getRepoUserShuffled();
+        LoginCredential loginCredential = new LoginCredential(user.getEmail(), Password.createHashedPassword("Invalid!PASSWORD123"));
+
+        // Execution
+        getEntityService().createToken(loginCredential);
+    }
+
+
     @Test(expected = NullPointerException.class)
     public void testCreateTokenNull() {
         // Execution
         Token token = getEntityService().createToken(null);
     }
+
+    //#endregion
+
+    //#region @Test isValidLoginCredential
 
     @Test
     public void testIsValidLoginCredential() {
@@ -104,6 +132,10 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
         assertFalse(getEntityService().isValidLoginCredential(null));
     }
 
+    //#endregion
+
+    //#region @Test isValidToken
+
     @Test
     public void testIsValidToken() {
         // Execution
@@ -139,7 +171,7 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
     }
 
     @Test
-    public void testIsInvalidWhenModifyingToken() {
+    public void testIsValidTokenModifiedValue() {
         // Execution
         Token token = getEntityService().post(createDistinctTestEntity());
         Token modifiedToken = new Token(token.getIdentifier(), token.getUser(), token.getValue() + "TestModify");
@@ -148,6 +180,25 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
         assertTrue(getEntityService().isValidToken(token));
         assertFalse(getEntityService().isValidToken(modifiedToken));
     }
+
+    @Test
+    public void testIsValidTokenModifiedUser() {
+        // Execution
+        Token token = getEntityService().post(createDistinctTestEntity());
+        User otherUser = getRepoUserShuffled();
+        while (otherUser.equals(token.getUser())) {
+            otherUser = getRepoUserShuffled();
+        }
+        Token modifiedToken = new Token(token.getIdentifier(), otherUser, token.getValue());
+
+        // Assertions
+        assertTrue(getEntityService().isValidToken(token));
+        assertFalse(getEntityService().isValidToken(modifiedToken));
+    }
+
+    //#endregion
+
+    //#region @Test deleteByUser
 
     @Test
     public void testDeleteByUserEntity() {
@@ -196,6 +247,8 @@ public class TokenServiceTest extends EntityServiceTest<TokenService, Token, Str
         // Execution
         getEntityService().deleteByUser((String) null);
     }
+
+    //#endregion
 
     @Override
     protected Token createDistinctTestEntity() {
