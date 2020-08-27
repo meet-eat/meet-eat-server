@@ -180,7 +180,6 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
 
     @Override
     public boolean existsPutConflict(Offer entity) {
-        return super.existsPutConflict(entity)
-                || entity.getMaxParticipants() < getParticipationAmount(entity);
+        return entity.getMaxParticipants() < getParticipationAmount(entity);
     }
 }
