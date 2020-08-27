@@ -303,28 +303,32 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
      */
     protected abstract S createDistinctTestEntity();
 
-    protected Offer getOfferPersistent(User creator) {
+    protected Offer getOfferTransient(User creator) {
         LocalDateTime dateTime = LocalDateTime.of(2020, Month.JULY, 30, 12, 32);
         Localizable location = new CityLocation("Karlsruhe");
         Set<Tag> tags = new HashSet<>();
-        Offer offer = new Offer(creator, tags, "Offer " + offerCount++,
+        return new Offer(creator, tags, "Offer " + offerCount++,
                 "Spaghetti. Mhmmm.", 4.99, 5, dateTime, location);
-        return offerService.post(offer);
+    }
+
+    protected Offer getOfferPersistent(User creator) {
+        Offer transientOffer = getOfferTransient(creator);
+        return offerService.post(transientOffer);
     }
 
     protected User getBasicUserPersistent() {
-        return createUserPersistent(Role.USER);
+        return getUserPersistent(Role.USER);
     }
 
     protected User getModeratorUserPersistent() {
-        return createUserPersistent(Role.MODERATOR);
+        return getUserPersistent(Role.MODERATOR);
     }
 
     protected User getAdminUserPersistent() {
-        return createUserPersistent(Role.ADMIN);
+        return getUserPersistent(Role.ADMIN);
     }
 
-    private User createUserPersistent(Role role) {
+    protected User getUserTransient(Role role) {
         Email email = new Email("noreply" + userCount + ".meet.eat@example.com");
         Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
         Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));
@@ -332,7 +336,12 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
                 "Description" + userCount, true, validLocalizable);
         user.setRole(role);
         userCount++;
-        return userService.post(user);
+        return user;
+    }
+
+    protected User getUserPersistent(Role role) {
+        User transientUser = getUserTransient(role);
+        return userService.post(transientUser);
     }
 
     //#endregion
