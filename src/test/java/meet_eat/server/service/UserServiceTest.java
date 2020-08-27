@@ -3,24 +3,13 @@ package meet_eat.server.service;
 import com.google.common.collect.Iterables;
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Offer;
-import meet_eat.data.entity.Tag;
 import meet_eat.data.entity.Token;
-import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.Password;
+import meet_eat.data.entity.user.Role;
 import meet_eat.data.entity.user.User;
-import meet_eat.data.location.CityLocation;
-import meet_eat.data.location.Localizable;
-import meet_eat.data.location.SphericalLocation;
-import meet_eat.data.location.SphericalPosition;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,19 +19,13 @@ import static org.junit.Assert.assertTrue;
 
 public class UserServiceTest extends EntityServiceTest<UserService, User, String> {
 
-    private static int userCount = 0;
-    private static int offerCount = 0;
-
     @Autowired
-    OfferService offerService;
-
+    private OfferService offerService;
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
 
     @Before
     public void prepareForeignRepositories() {
-        offerService.getRepository().deleteAll();
-        offerCount = 0;
         tokenService.getRepository().deleteAll();
     }
 
@@ -69,32 +52,24 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
     @Test
     public void testExistsPutConflictSameEmail() {
         // Test data
-        Email email = new Email("valid.meet.eat@example.com");
-        User userFst = createDistinctUser(email);
-        User userSnd = createDistinctTestEntity();
+        User userFst = getBasicUserPersistent();
+        User userSnd = getBasicUserPersistent();
 
         // Execution
-        getEntityService().post(userFst);
-        User postedUserSnd = getEntityService().post(userSnd);
-        postedUserSnd.setEmail(email);
+        userSnd.setEmail(userFst.getEmail());
 
         // Assertions
-        assertTrue(getEntityService().existsPutConflict(postedUserSnd));
+        assertTrue(getEntityService().existsPutConflict(userSnd));
     }
 
     @Test
     public void testExistsPutConflictNoConflict() {
         // Test data
-        Email email = new Email("valid.meet.eat@example.com");
-        User userFst = createDistinctUser(email);
-        User userSnd = createDistinctTestEntity();
-
-        // Execution
-        getEntityService().post(userFst);
-        User postedUserSnd = getEntityService().post(userSnd);
+        User userFst = getBasicUserPersistent();
+        User userSnd = getBasicUserPersistent();
 
         // Assertions
-        assertFalse(getEntityService().existsPutConflict(postedUserSnd));
+        assertFalse(getEntityService().existsPutConflict(userSnd));
     }
 
     //#endregion
@@ -104,15 +79,12 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
     @Test(expected = EntityConflictException.class)
     public void testPutWithEmailConflict() {
         // Test data
-        Email email = new Email("valid.meet.eat@example.com");
-        User userFst = createDistinctUser(email);
-        User userSnd = createDistinctTestEntity();
+        User userFst = getBasicUserPersistent();
+        User userSnd = getBasicUserPersistent();
 
         // Execution
-        getEntityService().post(userFst);
-        User postedUserSnd = getEntityService().post(userSnd);
-        postedUserSnd.setEmail(email);
-        getEntityService().put(postedUserSnd);
+        userSnd.setEmail(userFst.getEmail());
+        getEntityService().put(userSnd);
     }
 
     @Test
@@ -154,9 +126,9 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
     @Test(expected = EntityConflictException.class)
     public void testPostWithEmailConflict() {
         // Test data
-        Email email = new Email("valid.meet.eat@example.com");
-        User userFst = createDistinctUser(email);
-        User userSnd = createDistinctUser(email);
+        User userFst = getUserTransient(Role.USER);
+        User userSnd = getUserTransient(Role.USER);
+        userSnd.setEmail(userFst.getEmail());
 
         // Execution
         getEntityService().post(userFst);
@@ -192,10 +164,10 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         // Execution: Pre-Deletion
         User postedUserFst = getEntityService().post(userFst);
         User postedUserSnd = getEntityService().post(userSnd);
-        Offer offerFst = createDistinctRepoOffer(postedUserFst);
-        Offer offerSnd = createDistinctRepoOffer(postedUserFst);
-        Offer offerTrd = createDistinctRepoOffer(postedUserSnd);
-        Offer offerFth = createDistinctRepoOffer(postedUserSnd);
+        Offer offerFst = getOfferPersistent(postedUserFst);
+        Offer offerSnd = getOfferPersistent(postedUserFst);
+        Offer offerTrd = getOfferPersistent(postedUserSnd);
+        Offer offerFth = getOfferPersistent(postedUserSnd);
 
         // Assertions: Pre-Deletion
         assertEquals(4, Iterables.size(offerService.getAll()));
@@ -221,10 +193,10 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         // Execution: Pre-Deletion
         User postedUserFst = getEntityService().post(userFst);
         User postedUserSnd = getEntityService().post(userSnd);
-        Offer offerFst = createDistinctRepoOffer(postedUserFst);
-        Offer offerSnd = createDistinctRepoOffer(postedUserFst);
-        Offer offerTrd = createDistinctRepoOffer(postedUserSnd);
-        Offer offerFth = createDistinctRepoOffer(postedUserSnd);
+        Offer offerFst = getOfferPersistent(postedUserFst);
+        Offer offerSnd = getOfferPersistent(postedUserFst);
+        Offer offerTrd = getOfferPersistent(postedUserSnd);
+        Offer offerFth = getOfferPersistent(postedUserSnd);
 
         // Assertions: Pre-Deletion
         assertEquals(4, Iterables.size(offerService.getAll()));
@@ -316,40 +288,19 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
     @Test
     public void testGetByEmail() {
         // Test data
-        Email email = new Email("valid.meet.eat@example.com");
-        User user = createDistinctUser(email);
+        User user = getBasicUserPersistent();
 
         // Execution
-        User postedUser = getEntityService().post(user);
-        User gotUser = getEntityService().getByEmail(email).orElseThrow();
+        User gotUser = getEntityService().getByEmail(user.getEmail()).orElseThrow();
 
         // Assertions
-        assertEquals(postedUser, gotUser);
+        assertEquals(user, gotUser);
     }
 
     //#endregion
 
     @Override
     protected User createDistinctTestEntity() {
-        Email email = new Email("noreply" + userCount + ".meet.eat@example.com");
-        return createDistinctUser(email);
-    }
-
-    private User createDistinctUser(Email email) {
-        Password validPassword = Password.createHashedPassword("ABCDEFGhijkl1234!");
-        Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));
-        User user = new User(email, validPassword, LocalDate.of(1990, Month.JANUARY, 1),
-                "User" + userCount, "12345" + userCount, "Description" + userCount, true, validLocalizable);
-        userCount++;
-        return user;
-    }
-
-    private Offer createDistinctRepoOffer(User creator) {
-        LocalDateTime dateTime = LocalDateTime.of(2020, Month.JULY, 30, 12, 32);
-        Localizable location = new CityLocation("Karlsruhe");
-        Set<Tag> tags = new HashSet<>();
-        Offer offer = new Offer(creator, tags, "Offer " + offerCount++,
-                "Spaghetti. Mhmmm.", 4.99, 3, dateTime, location);
-        return offerService.post(offer);
+        return getUserTransient(Role.USER);
     }
 }
