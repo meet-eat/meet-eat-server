@@ -1,26 +1,14 @@
 package meet_eat.server.service;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Tag;
-import meet_eat.data.entity.user.Email;
-import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.User;
-import meet_eat.data.location.CityLocation;
-import meet_eat.data.location.Localizable;
-import meet_eat.data.location.SphericalLocation;
-import meet_eat.data.location.SphericalPosition;
-import org.assertj.core.util.Streams;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
@@ -29,34 +17,14 @@ import static org.junit.Assert.assertTrue;
 
 public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, String> {
 
-    private static int offerCount = 0;
-    private static boolean isUserRepoInitialized = false;
     private static boolean isTagRepoInitialized = false;
 
-    @Autowired
-    private UserService userService;
     @Autowired
     private TagService tagService;
     @Autowired
     private SubscriptionService subscriptionService;
     @Autowired
     private ParticipationService participationService;
-
-    @Before
-    public void prepareUserRepository() {
-        if (!isUserRepoInitialized) {
-            Password validPassword = Password.createHashedPassword("ABCDEFGhijkl1234!");
-            Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));
-            userService.getRepository().deleteAll();
-            for (int i = 0; i < 5; i++) {
-                User user = new User(new Email("noreply" + i + ".meet.eat@gmail.com"),
-                        validPassword, LocalDate.of(1990, Month.JANUARY, 1),
-                        "User" + i, "12345" + i, "Description" + i, true, validLocalizable);
-                userService.post(user);
-            }
-            isUserRepoInitialized = true;
-        }
-    }
 
     @Before
     public void prepareTagRepository() {
@@ -79,13 +47,13 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
     @Test
     public void testGetByCreatorId() {
         // Test data
-        User creator = Streams.stream(userService.getAll()).findAny().orElseThrow();
-        User otherCreator = Streams.stream(userService.getAll()).filter(x -> !x.equals(creator)).findAny().orElseThrow();
+        User creator = getBasicUserPersistent();
+        User otherCreator = getBasicUserPersistent();
+        Offer offerFst = getOfferPersistent(creator);
+        Offer offerSnd = getOfferPersistent(creator);
+        Offer offerTrd = getOfferPersistent(otherCreator);
 
         // Execution
-        Offer offerFst = getEntityService().post(createDistinctOffer(creator));
-        Offer offerSnd = getEntityService().post(createDistinctOffer(creator));
-        Offer offerTrd = getEntityService().post(createDistinctOffer(otherCreator));
         Iterable<Offer> gotOffers = getEntityService().getByCreatorId(creator.getIdentifier()).orElseThrow();
 
         // Assertions
@@ -115,13 +83,13 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
     @Test
     public void testDeleteByCreatorEntity() {
         // Test data
-        User creator = Streams.stream(userService.getAll()).findAny().orElseThrow();
-        User otherCreator = Streams.stream(userService.getAll()).filter(x -> !x.equals(creator)).findAny().orElseThrow();
+        User creator = getBasicUserPersistent();
+        User otherCreator = getBasicUserPersistent();
+        Offer offerFst = getOfferPersistent(creator);
+        Offer offerSnd = getOfferPersistent(creator);
+        Offer offerTrd = getOfferPersistent(otherCreator);
 
         // Execution
-        Offer offerFst = getEntityService().post(createDistinctOffer(creator));
-        Offer offerSnd = getEntityService().post(createDistinctOffer(creator));
-        Offer offerTrd = getEntityService().post(createDistinctOffer(otherCreator));
         getEntityService().deleteByCreator(creator);
         Iterable<Offer> gotOffers = getEntityService().getAll();
 
@@ -136,13 +104,13 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
     @Test
     public void testDeleteByCreatorIdentifier() {
         // Test data
-        User creator = Streams.stream(userService.getAll()).findAny().orElseThrow();
-        User otherCreator = Streams.stream(userService.getAll()).filter(x -> !x.equals(creator)).findAny().orElseThrow();
+        User creator = getBasicUserPersistent();
+        User otherCreator = getBasicUserPersistent();
+        Offer offerFst = getOfferPersistent(creator);
+        Offer offerSnd = getOfferPersistent(creator);
+        Offer offerTrd = getOfferPersistent(otherCreator);
 
         // Execution
-        Offer offerFst = getEntityService().post(createDistinctOffer(creator));
-        Offer offerSnd = getEntityService().post(createDistinctOffer(creator));
-        Offer offerTrd = getEntityService().post(createDistinctOffer(otherCreator));
         getEntityService().deleteByCreator(creator.getIdentifier());
         Iterable<Offer> gotOffers = getEntityService().getAll();
 
@@ -179,15 +147,6 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
 
     @Override
     protected Offer createDistinctTestEntity() {
-        User creator = Streams.stream(userService.getAll()).findAny().orElseThrow();
-        return createDistinctOffer(creator);
-    }
-
-    private Offer createDistinctOffer(User creator) {
-        LocalDateTime dateTime = LocalDateTime.of(2020, Month.JULY, 30, 12, 32);
-        Localizable location = new CityLocation("Karlsruhe");
-        Set<Tag> tags = Sets.newHashSet(tagService.getAll());
-        return new Offer(creator, tags, "Offer " + offerCount++,
-                "Spaghetti. Mhmmm.", 4.99, 99, dateTime, location);
+        return getOfferTransient(getBasicUserPersistent());
     }
 }
