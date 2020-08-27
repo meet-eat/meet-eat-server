@@ -39,7 +39,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testGetBySourceSingleRelation() {
         // Test data
         T source = getSourceEntity();
-        K relation = getRelationEntity(source, getTargetEntity());
+        K relation = getRelationEntityPersistent(source, getTargetEntity());
 
         // Execution
         Iterable<K> relations = getEntityService().getBySource(source);
@@ -54,9 +54,9 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testGetBySourceMultipleRelations() {
         // Test data
         T source = getSourceEntity();
-        K relationFst = getRelationEntity(source, getTargetEntity());
-        K relationSnd = getRelationEntity(source, getTargetEntity());
-        K foreignRelation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relationFst = getRelationEntityPersistent(source, getTargetEntity());
+        K relationSnd = getRelationEntityPersistent(source, getTargetEntity());
+        K foreignRelation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Execution
         Iterable<K> relations = getEntityService().getBySource(source);
@@ -96,7 +96,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testGetByTargetSingleRelation() {
         // Test data
         S target = getTargetEntity();
-        K relation = getRelationEntity(getSourceEntity(), target);
+        K relation = getRelationEntityPersistent(getSourceEntity(), target);
 
         // Execution
         Iterable<K> relations = getEntityService().getByTarget(target);
@@ -111,9 +111,9 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testGetByTargetMultipleRelations() {
         // Test data
         S target = getTargetEntity();
-        K relationFst = getRelationEntity(getSourceEntity(), target);
-        K relationSnd = getRelationEntity(getSourceEntity(), target);
-        K foreignRelation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relationFst = getRelationEntityPersistent(getSourceEntity(), target);
+        K relationSnd = getRelationEntityPersistent(getSourceEntity(), target);
+        K foreignRelation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Execution
         Iterable<K> relations = getEntityService().getByTarget(target);
@@ -152,7 +152,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testCountBySourceSingleRelation() {
         // Test data
         T source = getSourceEntity();
-        K relation = getRelationEntity(source, getTargetEntity());
+        K relation = getRelationEntityPersistent(source, getTargetEntity());
 
         // Execution
         long amount = getEntityService().countBySource(source);
@@ -165,9 +165,9 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testCountBySourceMultipleRelations() {
         // Test data
         T source = getSourceEntity();
-        K relationFst = getRelationEntity(source, getTargetEntity());
-        K relationSnd = getRelationEntity(source, getTargetEntity());
-        K foreignRelation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relationFst = getRelationEntityPersistent(source, getTargetEntity());
+        K relationSnd = getRelationEntityPersistent(source, getTargetEntity());
+        K foreignRelation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Execution
         long amount = getEntityService().countBySource(source);
@@ -202,7 +202,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testCountByTargetSingleRelation() {
         // Test data
         S target = getTargetEntity();
-        K relation = getRelationEntity(getSourceEntity(), target);
+        K relation = getRelationEntityPersistent(getSourceEntity(), target);
 
         // Execution
         long amount = getEntityService().countByTarget(target);
@@ -215,9 +215,9 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testCountByTargetMultipleRelations() {
         // Test data
         S target = getTargetEntity();
-        K relationFst = getRelationEntity(getSourceEntity(), target);
-        K relationSnd = getRelationEntity(getSourceEntity(), target);
-        K foreignRelation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relationFst = getRelationEntityPersistent(getSourceEntity(), target);
+        K relationSnd = getRelationEntityPersistent(getSourceEntity(), target);
+        K foreignRelation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Execution
         long amount = getEntityService().countByTarget(target);
@@ -253,7 +253,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testDeleteBySourceSingleRelation() {
         // Test data
         T source = getSourceEntity();
-        K relation = getRelationEntity(source, getTargetEntity());
+        K relation = getRelationEntityPersistent(source, getTargetEntity());
 
         // Assertions: Pre-Deletion
         assertEquals(1, getEntityService().countBySource(source));
@@ -271,9 +271,9 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testDeleteBySourceMultipleRelations() {
         // Test data
         T source = getSourceEntity();
-        K relationFst = getRelationEntity(source, getTargetEntity());
-        K relationSnd = getRelationEntity(source, getTargetEntity());
-        K foreignRelation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relationFst = getRelationEntityPersistent(source, getTargetEntity());
+        K relationSnd = getRelationEntityPersistent(source, getTargetEntity());
+        K foreignRelation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Assertions: Pre-Deletion
         assertEquals(2, getEntityService().countBySource(source));
@@ -314,7 +314,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testDeleteByTargetSingleRelation() {
         // Test data
         S target = getTargetEntity();
-        K relation = getRelationEntity(getSourceEntity(), target);
+        K relation = getRelationEntityPersistent(getSourceEntity(), target);
 
         // Assertions: Pre-Deletion
         assertEquals(1, getEntityService().countByTarget(target));
@@ -332,9 +332,9 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     public void testDeleteByTargetMultipleRelations() {
         // Test data
         S target = getTargetEntity();
-        K relationFst = getRelationEntity(getSourceEntity(), target);
-        K relationSnd = getRelationEntity(getSourceEntity(), target);
-        K foreignRelation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relationFst = getRelationEntityPersistent(getSourceEntity(), target);
+        K relationSnd = getRelationEntityPersistent(getSourceEntity(), target);
+        K foreignRelation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Assertions: Pre-Deletion
         assertEquals(2, getEntityService().countByTarget(target));
@@ -388,7 +388,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
         // Test data
         T source = getSourceEntity();
         S target = getTargetEntity();
-        K relation = getRelationEntity(source, target);
+        K relation = getRelationEntityPersistent(source, target);
 
         // Assertions: Pre-Deletion
         assertTrue(getEntityService().existsBySourceAndTarget(source, target));
@@ -407,10 +407,10 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
         // Test data
         T source = getSourceEntity();
         S target = getTargetEntity();
-        K relation = getRelationEntity(source, target);
-        K foreignRelationFst = getRelationEntity(source, getTargetEntity());
-        K foreignRelationSnd = getRelationEntity(getSourceEntity(), target);
-        K foreignRelationTrd = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relation = getRelationEntityPersistent(source, target);
+        K foreignRelationFst = getRelationEntityPersistent(source, getTargetEntity());
+        K foreignRelationSnd = getRelationEntityPersistent(getSourceEntity(), target);
+        K foreignRelationTrd = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Assertions: Pre-Deletion
         assertTrue(getEntityService().existsBySourceAndTarget(source, target));
@@ -468,7 +468,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
         // Test data
         T source = getSourceEntity();
         S target = getTargetEntity();
-        K relation = getRelationEntity(source, target);
+        K relation = getRelationEntityPersistent(source, target);
 
         // Assertions: Pre-Deletion
         assertEquals(1, getEntityService().countBySource(source));
@@ -489,10 +489,10 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
         // Test data
         T source = getSourceEntity();
         S target = getTargetEntity();
-        K relation = getRelationEntity(source, target);
-        K foreignRelationFst = getRelationEntity(source, getTargetEntity());
-        K foreignRelationSnd = getRelationEntity(getSourceEntity(), target);
-        K foreignRelationTrd = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relation = getRelationEntityPersistent(source, target);
+        K foreignRelationFst = getRelationEntityPersistent(source, getTargetEntity());
+        K foreignRelationSnd = getRelationEntityPersistent(getSourceEntity(), target);
+        K foreignRelationTrd = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Assertions: Pre-Deletion
         assertEquals(2, getEntityService().countBySource(source));
@@ -551,7 +551,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
         // Test data
         T source = getSourceEntity();
         S target = getTargetEntity();
-        K relation = getRelationEntity(source, target);
+        K relation = getRelationEntityPersistent(source, target);
 
         // Assertions
         assertTrue(getEntityService().existsBySourceAndTarget(source, target));
@@ -562,10 +562,10 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
         // Test data
         T source = getSourceEntity();
         S target = getTargetEntity();
-        K relation = getRelationEntity(source, target);
-        K foreignRelationFst = getRelationEntity(source, getTargetEntity());
-        K foreignRelationSnd = getRelationEntity(getSourceEntity(), target);
-        K foreignRelationTrd = getRelationEntity(getSourceEntity(), getTargetEntity());
+        K relation = getRelationEntityPersistent(source, target);
+        K foreignRelationFst = getRelationEntityPersistent(source, getTargetEntity());
+        K foreignRelationSnd = getRelationEntityPersistent(getSourceEntity(), target);
+        K foreignRelationTrd = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Assertions
         assertTrue(getEntityService().existsBySourceAndTarget(source, target));
@@ -579,7 +579,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
 
     protected abstract S getTargetEntity();
 
-    protected K getRelationEntity(T source, S target) {
+    protected K getRelationEntityPersistent(T source, S target) {
         return getEntityService().post(createDistinctTestEntity(source, target));
     }
 

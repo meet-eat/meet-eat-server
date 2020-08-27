@@ -9,12 +9,12 @@ public class ReportServiceTest extends EntityRelationServiceTest<ReportService, 
 
     @Override
     protected User getSourceEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override
     protected Entity<?> getTargetEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override

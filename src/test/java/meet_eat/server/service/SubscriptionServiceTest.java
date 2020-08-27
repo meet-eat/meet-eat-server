@@ -46,7 +46,7 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
     @Test
     public void testGetBySourceUserIdentifierExistingUserEmpty() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
 
         // Execution
         Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUserIdentifier(user.getIdentifier());
@@ -60,8 +60,8 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
     @Test
     public void testGetBySourceUserIdentifierSingleSubscription() {
         // Test data
-        User user = getBasicUser();
-        Subscription subscription = getRelationEntity(user, getTargetEntity());
+        User user = getBasicUserPersistent();
+        Subscription subscription = getRelationEntityPersistent(user, getTargetEntity());
 
         // Execution
         Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUserIdentifier(user.getIdentifier());
@@ -76,10 +76,10 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
     @Test
     public void testGetBySourceUserIdentifierMultipleSubscriptions() {
         // Test data
-        User user = getBasicUser();
-        Subscription subscriptionFst = getRelationEntity(user, getTargetEntity());
-        Subscription subscriptionSnd = getRelationEntity(user, getTargetEntity());
-        Subscription subscriptionForeign = getRelationEntity(getSourceEntity(), getTargetEntity());
+        User user = getBasicUserPersistent();
+        Subscription subscriptionFst = getRelationEntityPersistent(user, getTargetEntity());
+        Subscription subscriptionSnd = getRelationEntityPersistent(user, getTargetEntity());
+        Subscription subscriptionForeign = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Execution
         Optional<Iterable<Subscription>> optionalSubscriptions = getEntityService().getBySourceUserIdentifier(user.getIdentifier());
@@ -98,7 +98,7 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
     @Test
     public void testExistsPostConflictSameIdentifier() {
         // Test data
-        Subscription subscription = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Subscription subscription = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Subscription conflictSubscription = new SubscriptionMock(subscription.getIdentifier(), getSourceEntity(), getTargetEntity());
 
         // Assertions
@@ -108,7 +108,7 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
     @Test
     public void testExistsPostConflictSameSourceAndSameTarget() {
         // Test data
-        Subscription subscription = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Subscription subscription = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Subscription conflictSubscription = new Subscription(subscription.getSource(), subscription.getTarget());
 
         // Assertions
@@ -118,7 +118,7 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
     @Test
     public void testExistsPostConflictDifferentSourceAndSameTarget() {
         // Test data
-        Subscription subscription = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Subscription subscription = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Subscription conflictSubscription = new Subscription(getSourceEntity(), subscription.getTarget());
 
         // Assertions
@@ -128,7 +128,7 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
     @Test
     public void testExistsPostConflictSameSourceAndDifferentTarget() {
         // Test data
-        Subscription subscription = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Subscription subscription = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Subscription conflictSubscription = new Subscription(subscription.getSource(), getTargetEntity());
 
         // Assertions
@@ -139,12 +139,12 @@ public class SubscriptionServiceTest extends EntityRelationServiceTest<Subscript
 
     @Override
     protected User getSourceEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override
     protected User getTargetEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override

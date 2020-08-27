@@ -30,7 +30,7 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testDeleteByOfferIdentifierEmpty() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
 
         // Execution
         getEntityService().deleteByOffer(offer);
@@ -42,7 +42,7 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testDeleteByOfferIdentifierSingleRating() {
         // Test data
-        Rating rating = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Rating rating = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Offer offer = rating.getOffer();
 
         // Assertions: Pre-Deletion
@@ -58,10 +58,10 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testDeleteByOfferIdentifierMultipleRatings() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
-        Rating ratingFst = getEntityService().post(Rating.createHostRating(getBasicUser(), offer, RatingValue.POINTS_3));
-        Rating ratingSnd = getEntityService().post(Rating.createHostRating(getBasicUser(), offer, RatingValue.POINTS_3));
-        Rating ratingForeign = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
+        Rating ratingFst = getEntityService().post(Rating.createHostRating(getBasicUserPersistent(), offer, RatingValue.POINTS_3));
+        Rating ratingSnd = getEntityService().post(Rating.createHostRating(getBasicUserPersistent(), offer, RatingValue.POINTS_3));
+        Rating ratingForeign = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Assertions: Pre-Deletion
         assertTrue(getEntityService().exists(ratingFst.getIdentifier()));
@@ -96,7 +96,7 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingIdentifierNullRatingBase() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
 
         // Assertions
         assertEquals(DEFAULT_NOT_ENOUGH_RATINGS, getEntityService().getRatingValue(user.getIdentifier(), null).orElseThrow(), 0);
@@ -105,7 +105,7 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingUserNullRatingBase() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
 
         // Assertions
         assertEquals(DEFAULT_NOT_ENOUGH_RATINGS, getEntityService().getRatingValue(user, null), 0);
@@ -114,7 +114,7 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingUserZeroRatings() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
 
         // Execution
         double value = getEntityService().getRatingValue(user, RatingBasis.HOST);
@@ -126,7 +126,7 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingIdentifierZeroRatings() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
 
         // Execution
         Optional<Double> optionalValue = getEntityService().getRatingValue(user.getIdentifier(), RatingBasis.HOST);
@@ -150,8 +150,8 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingUserNotEnoughRatings() {
         // Test data
-        User user = getBasicUser();
-        Rating rating = getRelationEntity(getSourceEntity(), user);
+        User user = getBasicUserPersistent();
+        Rating rating = getRelationEntityPersistent(getSourceEntity(), user);
 
         // Execution
         double value = getEntityService().getRatingValue(user, RatingBasis.HOST);
@@ -163,8 +163,8 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingIdentifierNotEnoughRatings() {
         // Test data
-        User user = getBasicUser();
-        Rating rating = getRelationEntity(getSourceEntity(), user);
+        User user = getBasicUserPersistent();
+        Rating rating = getRelationEntityPersistent(getSourceEntity(), user);
 
         // Execution
         Optional<Double> optionalValue = getEntityService().getRatingValue(user.getIdentifier(), RatingBasis.HOST);
@@ -176,10 +176,10 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingUserEnoughRatings() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
         int ratingSum = 0;
         for (int i = 0; i < MIN_AMOUNT_RATINGS; i++) {
-            ratingSum += getRelationEntity(getSourceEntity(), user).getValue().getIntegerValue();
+            ratingSum += getRelationEntityPersistent(getSourceEntity(), user).getValue().getIntegerValue();
         }
         double ratingAverage = (double) ratingSum / (double) MIN_AMOUNT_RATINGS;
 
@@ -193,10 +193,10 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
     @Test
     public void testGetRatingValueExistingIdentifierEnoughRatings() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
         int ratingSum = 0;
         for (int i = 0; i < MIN_AMOUNT_RATINGS; i++) {
-            ratingSum += getRelationEntity(getSourceEntity(), user).getValue().getIntegerValue();
+            ratingSum += getRelationEntityPersistent(getSourceEntity(), user).getValue().getIntegerValue();
         }
         double ratingAverage = (double) ratingSum / (double) MIN_AMOUNT_RATINGS;
 
@@ -211,16 +211,16 @@ public class RatingServiceTest extends EntityRelationServiceTest<RatingService, 
 
     @Override
     protected User getSourceEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override
     protected User getTargetEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override
     protected Rating createDistinctTestEntity(User source, User target) {
-        return Rating.createHostRating(source, getValidOffer(target), RatingValue.POINTS_3);
+        return Rating.createHostRating(source, getOfferPersistent(target), RatingValue.POINTS_3);
     }
 }

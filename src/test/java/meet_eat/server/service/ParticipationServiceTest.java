@@ -47,7 +47,7 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testGetByOfferIdentifierExistingOfferEmpty() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
 
         // Execution
         Optional<Iterable<Participation>> optionalParticipations = getEntityService().getByOfferIdentifier(offer.getIdentifier());
@@ -61,8 +61,8 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testGetByOfferIdentifierSingleParticipation() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
-        Participation participation = getRelationEntity(getSourceEntity(), offer);
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
+        Participation participation = getRelationEntityPersistent(getSourceEntity(), offer);
 
         // Execution
         Optional<Iterable<Participation>> optionalParticipations = getEntityService().getByOfferIdentifier(offer.getIdentifier());
@@ -77,10 +77,10 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testGetByOfferIdentifierMultipleParticipations() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
-        Participation participationFst = getRelationEntity(getSourceEntity(), offer);
-        Participation participationSnd = getRelationEntity(getSourceEntity(), offer);
-        Participation participationForeign = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
+        Participation participationFst = getRelationEntityPersistent(getSourceEntity(), offer);
+        Participation participationSnd = getRelationEntityPersistent(getSourceEntity(), offer);
+        Participation participationForeign = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Execution
         Optional<Iterable<Participation>> optionalParticipations = getEntityService().getByOfferIdentifier(offer.getIdentifier());
@@ -116,7 +116,7 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testCanParticipateNoParticipations() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
 
         // Execution
         Optional<Boolean> optionalBoolean = getEntityService().canParticipate(offer.getIdentifier());
@@ -129,9 +129,9 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testCanParticipateFullOffer() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
         for (int i = 0; i < offer.getMaxParticipants(); i++) {
-            getRelationEntity(getSourceEntity(), offer);
+            getRelationEntityPersistent(getSourceEntity(), offer);
         }
 
         // Execution
@@ -145,9 +145,9 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testCanParticipateNearlyFullOffer() {
         // Test data
-        Offer offer = getValidOffer(getBasicUser());
+        Offer offer = getOfferPersistent(getBasicUserPersistent());
         for (int i = 0; i < offer.getMaxParticipants() - 1; i++) {
-            getRelationEntity(getSourceEntity(), offer);
+            getRelationEntityPersistent(getSourceEntity(), offer);
         }
 
         // Execution
@@ -165,7 +165,7 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testExistsPostConflictSameIdentifier() {
         // Test data
-        Participation participation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Participation participation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Participation conflictParticipation = new ParticipationMock(participation.getIdentifier(), getSourceEntity(), getTargetEntity());
 
         // Assertions
@@ -175,7 +175,7 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testExistsPostConflictSameSourceAndSameTarget() {
         // Test data
-        Participation participation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Participation participation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Participation conflictParticipation = new Participation(participation.getSource(), participation.getTarget());
 
         // Assertions
@@ -185,7 +185,7 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testExistsPostConflictDifferentSourceAndSameTarget() {
         // Test data
-        Participation participation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Participation participation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Participation conflictParticipation = new Participation(getSourceEntity(), participation.getTarget());
 
         // Assertions
@@ -195,7 +195,7 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
     @Test
     public void testExistsPostConflictSameSourceAndDifferentTarget() {
         // Test data
-        Participation participation = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Participation participation = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Participation conflictParticipation = new Participation(participation.getSource(), getTargetEntity());
 
         // Assertions
@@ -206,12 +206,12 @@ public class ParticipationServiceTest extends EntityRelationServiceTest<Particip
 
     @Override
     protected User getSourceEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override
     protected Offer getTargetEntity() {
-        return getValidOffer(getBasicUser());
+        return getOfferPersistent(getBasicUserPersistent());
     }
 
     @Override

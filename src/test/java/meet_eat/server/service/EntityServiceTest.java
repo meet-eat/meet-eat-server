@@ -303,28 +303,28 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
      */
     protected abstract S createDistinctTestEntity();
 
-    protected Offer getValidOffer(User creator) {
+    protected Offer getOfferPersistent(User creator) {
         LocalDateTime dateTime = LocalDateTime.of(2020, Month.JULY, 30, 12, 32);
         Localizable location = new CityLocation("Karlsruhe");
         Set<Tag> tags = new HashSet<>();
         Offer offer = new Offer(creator, tags, "Offer " + offerCount++,
-                "Spaghetti. Mhmmm.", 4.99, 3, dateTime, location);
+                "Spaghetti. Mhmmm.", 4.99, 5, dateTime, location);
         return offerService.post(offer);
     }
 
-    protected User getBasicUser() {
-        return createUser(Role.USER);
+    protected User getBasicUserPersistent() {
+        return createUserPersistent(Role.USER);
     }
 
-    protected User getModeratorUser() {
-        return createUser(Role.MODERATOR);
+    protected User getModeratorUserPersistent() {
+        return createUserPersistent(Role.MODERATOR);
     }
 
-    protected User getAdminUser() {
-        return createUser(Role.ADMIN);
+    protected User getAdminUserPersistent() {
+        return createUserPersistent(Role.ADMIN);
     }
 
-    private User createUser(Role role) {
+    private User createUserPersistent(Role role) {
         Email email = new Email("noreply" + userCount + ".meet.eat@example.com");
         Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
         Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));

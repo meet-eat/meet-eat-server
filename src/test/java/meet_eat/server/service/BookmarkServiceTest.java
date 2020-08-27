@@ -47,7 +47,7 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
     @Test
     public void testGetByUserIdentifierExistingUserEmpty() {
         // Test data
-        User user = getBasicUser();
+        User user = getBasicUserPersistent();
 
         // Execution
         Optional<Iterable<Bookmark>> optionalBookmarks = getEntityService().getByUserIdentifier(user.getIdentifier());
@@ -61,8 +61,8 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
     @Test
     public void testGetByUserIdentifierSingleBookmark() {
         // Test data
-        User user = getBasicUser();
-        Bookmark bookmark = getRelationEntity(user, getTargetEntity());
+        User user = getBasicUserPersistent();
+        Bookmark bookmark = getRelationEntityPersistent(user, getTargetEntity());
 
         // Execution
         Optional<Iterable<Bookmark>> optionalBookmarks = getEntityService().getByUserIdentifier(user.getIdentifier());
@@ -77,10 +77,10 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
     @Test
     public void testGetByUserIdentifierMultipleBookmarks() {
         // Test data
-        User user = getBasicUser();
-        Bookmark bookmarkFst = getRelationEntity(user, getTargetEntity());
-        Bookmark bookmarkSnd = getRelationEntity(user, getTargetEntity());
-        Bookmark bookmarkForeign = getRelationEntity(getSourceEntity(), getTargetEntity());
+        User user = getBasicUserPersistent();
+        Bookmark bookmarkFst = getRelationEntityPersistent(user, getTargetEntity());
+        Bookmark bookmarkSnd = getRelationEntityPersistent(user, getTargetEntity());
+        Bookmark bookmarkForeign = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
 
         // Execution
         Optional<Iterable<Bookmark>> optionalBookmarks = getEntityService().getByUserIdentifier(user.getIdentifier());
@@ -98,7 +98,7 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
     @Test
     public void testExistsPostConflictSameIdentifier() {
         // Test data
-        Bookmark bookmark = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Bookmark bookmark = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Bookmark conflictBookmark = new BookmarkMock(bookmark.getIdentifier(), getSourceEntity(), getTargetEntity());
 
         // Assertions
@@ -108,7 +108,7 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
     @Test
     public void testExistsPostConflictSameSourceAndSameTarget() {
         // Test data
-        Bookmark bookmark = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Bookmark bookmark = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Bookmark conflictBookmark = new Bookmark(bookmark.getSource(), bookmark.getTarget());
 
         // Assertions
@@ -118,7 +118,7 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
     @Test
     public void testExistsPostConflictDifferentSourceAndSameTarget() {
         // Test data
-        Bookmark bookmark = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Bookmark bookmark = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Bookmark conflictBookmark = new Bookmark(getSourceEntity(), bookmark.getTarget());
 
         // Assertions
@@ -128,7 +128,7 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
     @Test
     public void testExistsPostConflictSameSourceAndDifferentTarget() {
         // Test data
-        Bookmark bookmark = getRelationEntity(getSourceEntity(), getTargetEntity());
+        Bookmark bookmark = getRelationEntityPersistent(getSourceEntity(), getTargetEntity());
         Bookmark conflictBookmark = new Bookmark(bookmark.getSource(), getTargetEntity());
 
         // Assertions
@@ -139,12 +139,12 @@ public class BookmarkServiceTest extends EntityRelationServiceTest<BookmarkServi
 
     @Override
     protected User getSourceEntity() {
-        return getBasicUser();
+        return getBasicUserPersistent();
     }
 
     @Override
     protected Offer getTargetEntity() {
-        return getValidOffer(getBasicUser());
+        return getOfferPersistent(getBasicUserPersistent());
     }
 
     @Override
