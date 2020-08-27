@@ -1,7 +1,5 @@
 package meet_eat.server.service;
 
-import static org.junit.Assert.*;
-
 import com.google.common.collect.Iterables;
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Offer;
@@ -24,6 +22,12 @@ import java.time.Month;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 public class UserServiceTest extends EntityServiceTest<UserService, User, String> {
 
     private static int userCount = 0;
@@ -41,6 +45,8 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         offerCount = 0;
         tokenService.getRepository().deleteAll();
     }
+
+    //#region @Test existsPutConflict
 
     @Test(expected = NullPointerException.class)
     public void testExistsPutConflictNull() {
@@ -91,6 +97,10 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         assertFalse(getEntityService().existsPutConflict(postedUserSnd));
     }
 
+    //#endregion
+
+    //#region @Test put
+
     @Test(expected = EntityConflictException.class)
     public void testPutWithEmailConflict() {
         // Test data
@@ -137,6 +147,10 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         assertNotNull(putUser.getPassword().getHash());
     }
 
+    //#endregion
+
+    //#region @Test post
+
     @Test(expected = EntityConflictException.class)
     public void testPostWithEmailConflict() {
         // Test data
@@ -164,6 +178,10 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         assertNotNull(postedUser.getPassword().getSalt());
         assertNotNull(postedUser.getPassword().getHash());
     }
+
+    //#endregion
+
+    //#region @Test delete
 
     @Test
     public void testDeleteByEntityCascadingOffers() {
@@ -285,6 +303,10 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         assertTrue(Iterables.contains(tokens, tokenFth));
     }
 
+    //#endregion
+
+    //#region @Test getByEmail
+
     @Test(expected = NullPointerException.class)
     public void testGetByEmailNull() {
         // Execution
@@ -304,6 +326,8 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         // Assertions
         assertEquals(postedUser, gotUser);
     }
+
+    //#endregion
 
     @Override
     protected User createDistinctTestEntity() {
