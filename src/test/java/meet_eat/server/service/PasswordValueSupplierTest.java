@@ -1,8 +1,10 @@
 package meet_eat.server.service;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PasswordValueSupplierTest {
 
@@ -51,5 +53,53 @@ public class PasswordValueSupplierTest {
 
         // Assertions
         assertNotEquals(passwordValueFst, passwordValueSnd);
+    }
+
+    @Test
+    public void testSetBasicCharCount() {
+        // Test data
+        int initBasicCharCount = 20;
+        int setBasicCharCount = 25;
+        int specialCharCount = 3;
+        int digitCount = 7;
+
+        // Execution
+        PasswordValueSupplier passwordSupplier = new PasswordValueSupplier(initBasicCharCount, specialCharCount, digitCount);
+        passwordSupplier.setBasicCharCount(setBasicCharCount);
+
+        // Assertions
+        assertEquals(setBasicCharCount, passwordSupplier.getBasicCharCount());
+    }
+
+    @Test
+    public void testSetSpecialCharCount() {
+        // Test data
+        int basicCharCount = 20;
+        int initSpecialCharCount = 3;
+        int setSpecialCharCount = 5;
+        int digitCount = 7;
+
+        // Execution
+        PasswordValueSupplier passwordSupplier = new PasswordValueSupplier(basicCharCount, initSpecialCharCount, digitCount);
+        passwordSupplier.setSpecialCharCount(setSpecialCharCount);
+
+        // Assertions
+        assertEquals(setSpecialCharCount, passwordSupplier.getSpecialCharCount());
+    }
+
+    @Test
+    public void testSetDigitCount() {
+        // Test data
+        int basicCharCount = 20;
+        int specialCharCount = 3;
+        int initDigitCount = 7;
+        int setDigitCount = 19;
+
+        // Execution
+        PasswordValueSupplier passwordSupplier = new PasswordValueSupplier(basicCharCount, specialCharCount, initDigitCount);
+        passwordSupplier.setDigitCount(setDigitCount);
+
+        // Assertions
+        assertEquals(setDigitCount, passwordSupplier.getDigitCount());
     }
 }
