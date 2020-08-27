@@ -144,13 +144,9 @@ public class OfferService extends EntityService<Offer, String, OfferRepository> 
 
             // Get the offers of the subscribed users
             for (User subscribedUser : subscribedUsers) {
-                Optional<Iterable<Offer>> optionalOffersBySubscribed = getByCreatorId(subscribedUser.getIdentifier());
-
-                // Add offers of subscribed user, continue if not present respectively.
-                if (optionalOffersBySubscribed.isPresent()) {
-                    Iterable<Offer> offersBySubscribed = optionalOffersBySubscribed.get();
-                    offers = Iterables.concat(offers, offersBySubscribed);
-                }
+                // Get offers of subscribed user and concat them.
+                Iterable<Offer> offersBySubscribed = getByCreator(subscribedUser);
+                offers = Iterables.concat(offers, offersBySubscribed);
             }
             return Optional.of(offers);
         }
