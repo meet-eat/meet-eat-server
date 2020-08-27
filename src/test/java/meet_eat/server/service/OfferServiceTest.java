@@ -2,14 +2,10 @@ package meet_eat.server.service;
 
 import com.google.common.collect.Iterables;
 import meet_eat.data.entity.Offer;
-import meet_eat.data.entity.Tag;
 import meet_eat.data.entity.user.User;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,24 +13,10 @@ import static org.junit.Assert.assertTrue;
 
 public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, String> {
 
-    private static boolean isTagRepoInitialized = false;
-
-    @Autowired
-    private TagService tagService;
     @Autowired
     private SubscriptionService subscriptionService;
     @Autowired
     private ParticipationService participationService;
-
-    @Before
-    public void prepareTagRepository() {
-        if (!isTagRepoInitialized) {
-            Stream<Tag> tags = Stream.of(new Tag("Vegan"), new Tag("Vegetarian"), new Tag("Gluten free"));
-            tagService.getRepository().deleteAll();
-            tags.forEach(tagService::post);
-            isTagRepoInitialized = true;
-        }
-    }
 
     //#region @Test getByCreatorId
 
