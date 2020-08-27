@@ -13,6 +13,7 @@ import meet_eat.data.location.SphericalLocation;
 import meet_eat.data.location.SphericalPosition;
 import org.assertj.core.util.Streams;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,9 +35,12 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private TagService tagService;
+    @Autowired
+    private SubscriptionService subscriptionService;
+    @Autowired
+    private ParticipationService participationService;
 
     @Before
     public void prepareUserRepository() {
@@ -64,6 +68,8 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
         }
     }
 
+    //#region @Test getByCreatorId
+
     @Test(expected = NullPointerException.class)
     public void testGetByCreatorIdNull() {
         // Execution
@@ -89,6 +95,10 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
         assertTrue(Iterables.contains(gotOffers, offerSnd));
         assertFalse(Iterables.contains(gotOffers, offerTrd));
     }
+
+    //#endregion
+
+    //#region @Test deleteByCreator
 
     @Test(expected = NullPointerException.class)
     public void testDeleteByCreatorEntityNull() {
@@ -143,6 +153,29 @@ public class OfferServiceTest extends EntityServiceTest<OfferService, Offer, Str
         assertFalse(Iterables.contains(gotOffers, offerSnd));
         assertTrue(Iterables.contains(gotOffers, offerTrd));
     }
+
+    //#endregion
+
+    //#region @Test existsPutConflict
+
+    @Test(expected = NullPointerException.class)
+    public void testExistsPutConflictNull() {
+        // Execution
+        getEntityService().existsPutConflict(null);
+    }
+
+    // TODO Finish implementation
+    @Ignore
+    @Test
+    public void testExistsPutConflictParticipantAmount() {
+        // Test data
+        Offer offer = getEntityService().post(createDistinctTestEntity());
+
+        // Execution
+        getEntityService().existsPutConflict(null);
+    }
+
+    //#endregion
 
     @Override
     protected Offer createDistinctTestEntity() {
