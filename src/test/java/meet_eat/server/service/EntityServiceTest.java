@@ -40,11 +40,14 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
 
     private static int userCount = 0;
     private static int offerCount = 0;
+    private static int tagCount = 0;
 
     @Autowired
     private UserService userService;
     @Autowired
     private OfferService offerService;
+    @Autowired
+    private TagService tagService;
     @Autowired
     private T entityService;
 
@@ -342,6 +345,15 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
     protected User getUserPersistent(Role role) {
         User transientUser = getUserTransient(role);
         return userService.post(transientUser);
+    }
+
+    protected Tag getTagTransient() {
+        return new Tag("Tag" + tagCount);
+    }
+
+    protected Tag getTagPersistent() {
+        Tag transientTag = getTagTransient();
+        return tagService.post(transientTag);
     }
 
     //#endregion
