@@ -2,27 +2,10 @@ package meet_eat.server.service;
 
 import com.google.common.collect.Iterables;
 import meet_eat.data.entity.Entity;
-import meet_eat.data.entity.Offer;
-import meet_eat.data.entity.Tag;
 import meet_eat.data.entity.relation.EntityRelation;
-import meet_eat.data.entity.user.Email;
-import meet_eat.data.entity.user.Password;
-import meet_eat.data.entity.user.Role;
-import meet_eat.data.entity.user.User;
-import meet_eat.data.location.CityLocation;
-import meet_eat.data.location.Localizable;
-import meet_eat.data.location.SphericalLocation;
-import meet_eat.data.location.SphericalPosition;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,22 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public abstract class EntityRelationServiceTest<V extends EntityRelationService<K, T, S, U, ?>, K extends EntityRelation<T, S, U>, T extends Entity<?>, S extends Entity<?>, U extends Serializable> extends EntityServiceTest<V, K, U> {
-
-    private static final String PASSWORD_VALID_VALUE = "AbcdefgTest1234!?";
-
-    private static int userCount = 0;
-    private static int offerCount = 0;
-
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private OfferService offerService;
-
-    @Before
-    public void prepareUserAndOfferRepository() {
-        userService.getRepository().deleteAll();
-        offerService.getRepository().deleteAll();
-    }
 
     //#region @Test getBySource
 
@@ -607,6 +574,7 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
     //#endregion
 
     //#region Test environment utility
+
     protected abstract T getSourceEntity();
 
     protected abstract S getTargetEntity();
@@ -622,36 +590,5 @@ public abstract class EntityRelationServiceTest<V extends EntityRelationService<
         return createDistinctTestEntity(getSourceEntity(), getTargetEntity());
     }
 
-    protected Offer getValidOffer(User creator) {
-        LocalDateTime dateTime = LocalDateTime.of(2020, Month.JULY, 30, 12, 32);
-        Localizable location = new CityLocation("Karlsruhe");
-        Set<Tag> tags = new HashSet<>();
-        Offer offer = new Offer(creator, tags, "Offer " + offerCount++,
-                "Spaghetti. Mhmmm.", 4.99, 3, dateTime, location);
-        return offerService.post(offer);
-    }
-
-    protected User getBasicUser() {
-        return createUser(Role.USER);
-    }
-
-    protected User getModeratorUser() {
-        return createUser(Role.MODERATOR);
-    }
-
-    protected User getAdminUser() {
-        return createUser(Role.ADMIN);
-    }
-
-    private User createUser(Role role) {
-        Email email = new Email("noreply" + userCount + ".meet.eat@example.com");
-        Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
-        Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));
-        User user = new User(email, password, LocalDate.EPOCH, "User" + userCount, "12345" + userCount,
-                "Description" + userCount, true, validLocalizable);
-        user.setRole(role);
-        userCount++;
-        return userService.post(user);
-    }
     //#endregion
 }

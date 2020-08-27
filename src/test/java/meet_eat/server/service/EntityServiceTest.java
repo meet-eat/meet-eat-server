@@ -2,7 +2,16 @@ package meet_eat.server.service;
 
 import com.google.common.collect.Iterables;
 import meet_eat.data.entity.Entity;
-import org.junit.After;
+import meet_eat.data.entity.Offer;
+import meet_eat.data.entity.Tag;
+import meet_eat.data.entity.user.Email;
+import meet_eat.data.entity.user.Password;
+import meet_eat.data.entity.user.Role;
+import meet_eat.data.entity.user.User;
+import meet_eat.data.location.CityLocation;
+import meet_eat.data.location.Localizable;
+import meet_eat.data.location.SphericalLocation;
+import meet_eat.data.location.SphericalPosition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,14 +20,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S extends Entity<U>, U extends Serializable> {
 
+    private static final String PASSWORD_VALID_VALUE = "AbcdefgTest1234!?";
+
+    private static int userCount = 0;
+    private static int offerCount = 0;
+
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private OfferService offerService;
     @Autowired
     private T entityService;
 
@@ -27,9 +53,10 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
         entityService.getRepository().deleteAll();
     }
 
-    @After
-    public void cleanUpTestEnvironment() {
-        entityService.getRepository().deleteAll();
+    @Before
+    public void prepareUserAndOfferRepository() {
+        userService.getRepository().deleteAll();
+        offerService.getRepository().deleteAll();
     }
 
     @Test(expected = NullPointerException.class)
@@ -261,6 +288,8 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
         assertFalse(entityService.exists(postedEntity.getIdentifier()));
     }
 
+    //#region Test environment utility
+
     protected T getEntityService() {
         return entityService;
     }
@@ -273,4 +302,38 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
      * @return A new distinct entity.
      */
     protected abstract S createDistinctTestEntity();
+
+    protected Offer getValidOffer(User creator) {
+        LocalDateTime dateTime = LocalDateTime.of(2020, Month.JULY, 30, 12, 32);
+        Localizable location = new CityLocation("Karlsruhe");
+        Set<Tag> tags = new HashSet<>();
+        Offer offer = new Offer(creator, tags, "Offer " + offerCount++,
+                "Spaghetti. Mhmmm.", 4.99, 3, dateTime, location);
+        return offerService.post(offer);
+    }
+
+    protected User getBasicUser() {
+        return createUser(Role.USER);
+    }
+
+    protected User getModeratorUser() {
+        return createUser(Role.MODERATOR);
+    }
+
+    protected User getAdminUser() {
+        return createUser(Role.ADMIN);
+    }
+
+    private User createUser(Role role) {
+        Email email = new Email("noreply" + userCount + ".meet.eat@example.com");
+        Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
+        Localizable validLocalizable = new SphericalLocation(new SphericalPosition(0, 0));
+        User user = new User(email, password, LocalDate.EPOCH, "User" + userCount, "12345" + userCount,
+                "Description" + userCount, true, validLocalizable);
+        user.setRole(role);
+        userCount++;
+        return userService.post(user);
+    }
+
+    //#endregion
 }
