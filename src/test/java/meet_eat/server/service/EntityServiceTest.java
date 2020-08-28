@@ -60,6 +60,7 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
     public void prepareUserAndOfferRepository() {
         userService.getRepository().deleteAll();
         offerService.getRepository().deleteAll();
+        tagService.getRepository().deleteAll();
     }
 
     @Test(expected = NullPointerException.class)
@@ -348,7 +349,7 @@ public abstract class EntityServiceTest<T extends EntityService<S, U, ?>, S exte
     }
 
     protected Tag getTagTransient() {
-        return new Tag("Tag" + tagCount);
+        return new Tag("Tag" + tagCount++);
     }
 
     protected Tag getTagPersistent() {
