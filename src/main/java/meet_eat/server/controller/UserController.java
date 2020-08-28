@@ -81,7 +81,7 @@ public class UserController extends EntityController<User, String, UserService> 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else if (!getSecurityService().isLegalPost(entity, token)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else if (getEntityService().exists(entity.getIdentifier())) {
+        } else if (getEntityService().existsPostConflict(entity)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
