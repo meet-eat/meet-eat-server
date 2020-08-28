@@ -36,10 +36,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -604,6 +607,117 @@ public abstract class EntityControllerTest<C extends EntityController<T, U, ?>, 
 
         // Assertions
         assertNotNull(webDataBinder);
+    }
+
+    //#endregion
+
+    //#region Abstract endpoint test frames
+
+    // Get(all)
+
+    protected void createHandleGetAllEndpointTest(Function<Token, ResponseEntity<Iterable<T>>> function) {
+        Token token = getTokenPersistent(getUserPersistent(Role.ADMIN));
+        createHandleGetAllEndpointTest(function, token);
+    }
+
+    protected void createHandleGetAllEndpointTest(Function<Token, ResponseEntity<Iterable<T>>> function, Token token) {
+        // Test data
+        int entityAmount = 4;
+        List<T> entities = new LinkedList<>();
+        repeat(entityAmount, i -> entities.add(getTestEntityPersistent()));
+
+        // Execution
+        ResponseEntity<Iterable<T>> responseEntity = function.apply(token);
+
+        // Assertions
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        repeat(entityAmount, i -> assertTrue(Iterables.contains(responseEntity.getBody(), entities.get(i))));
+    }
+
+    // Get
+
+    protected void createHandleGetEndpointTest(BiFunction<U, Token, ResponseEntity<T>> function) {
+        Token token = getTokenPersistent(getUserPersistent(Role.ADMIN));
+        T entity = getTestEntityPersistent();
+        createHandleGetEndpointTest(function, entity, token);
+    }
+
+    protected void createHandleGetEndpointTest(BiFunction<U, Token, ResponseEntity<T>> function, T persistentEntity, Token token) {
+        // Execution
+        ResponseEntity<T> responseEntity = function.apply(persistentEntity.getIdentifier(), token);
+
+        // Assertions
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(persistentEntity, responseEntity.getBody());
+    }
+
+    // Delete
+
+    protected void createHandleDeleteByIdentifierEndpointTest(BiFunction<U, Token, ResponseEntity<Void>> function) {
+        Token token = getTokenPersistent(getUserPersistent(Role.ADMIN));
+        T entity = getTestEntityPersistent();
+        createHandleDeleteByIdentifierEndpointTest(function, entity, token);
+    }
+
+    protected void createHandleDeleteByIdentifierEndpointTest(BiFunction<U, Token, ResponseEntity<Void>> function, T persistentEntity, Token token) {
+        // Execution
+        ResponseEntity<Void> responseEntity = function.apply(persistentEntity.getIdentifier(), token);
+
+        // Assertions
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+        assertFalse(getEntityController().getEntityService().exists(persistentEntity.getIdentifier()));
+    }
+
+    protected void createHandleDeleteByEntityEndpointTest(BiFunction<T, Token, ResponseEntity<Void>> function) {
+        Token token = getTokenPersistent(getUserPersistent(Role.ADMIN));
+        T entity = getTestEntityPersistent();
+        createHandleDeleteByEntityEndpointTest(function, entity, token);
+    }
+
+    protected void createHandleDeleteByEntityEndpointTest(BiFunction<T, Token, ResponseEntity<Void>> function, T persistentEntity, Token token) {
+        // Execution
+        ResponseEntity<Void> responseEntity = function.apply(persistentEntity, token);
+
+        // Assertions
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+        assertFalse(getEntityController().getEntityService().exists(persistentEntity.getIdentifier()));
+    }
+
+    // Post
+
+    protected void createHandlePostEndpointTest(BiFunction<T, Token, ResponseEntity<T>> function) {
+        Token token = getTokenPersistent(getUserPersistent(Role.ADMIN));
+        T entity = getTestEntityTransient();
+        createHandlePostEndpointTest(function, entity, token);
+    }
+
+    protected void createHandlePostEndpointTest(BiFunction<T, Token, ResponseEntity<T>> function, T transientEntity, Token token) {
+        // Execution
+        ResponseEntity<T> responseEntity = function.apply(transientEntity, token);
+
+        // Assertions
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertTrue(getEntityController().getEntityService().exists(responseEntity.getBody().getIdentifier()));
+    }
+
+    // Put
+
+    protected void createHandlePutEndpointTest(Function<U, Function<T, Function<Token, ResponseEntity<T>>>> function) {
+        Token token = getTokenPersistent(getUserPersistent(Role.ADMIN));
+        T entity = getTestEntityPersistent();
+        createHandlePutEndpointTest(function, entity.getIdentifier(), entity, token);
+    }
+
+    protected void createHandlePutEndpointTest(Function<U, Function<T, Function<Token, ResponseEntity<T>>>> function, U identifier, T persistentEntity, Token token) {
+        // Execution
+        ResponseEntity<T> responseEntity = function.apply(identifier).apply(persistentEntity).apply(token);
+
+        // Assertions
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(getEntityController().getEntityService().exists(persistentEntity.getIdentifier()));
     }
 
     //#endregion
