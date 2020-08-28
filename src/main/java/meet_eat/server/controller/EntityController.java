@@ -170,6 +170,11 @@ public abstract class EntityController<T extends Entity<U>, U extends Serializab
      * @return a bodiless {@link ResponseEntity} containing the status of the request
      */
     protected ResponseEntity<Void> handleDelete(U identifier, Token token) {
+        if (Objects.isNull(identifier)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // Get the optional entity from the service and return appropriately.
         Optional<T> optionalEntity = getEntityService().get(identifier);
         if (optionalEntity.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
