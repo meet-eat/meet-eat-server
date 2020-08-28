@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import meet_eat.data.LoginCredential;
 import meet_eat.data.entity.Offer;
 import meet_eat.data.entity.Token;
+import meet_eat.data.entity.user.Email;
 import meet_eat.data.entity.user.Password;
 import meet_eat.data.entity.user.Role;
 import meet_eat.data.entity.user.User;
@@ -85,6 +86,31 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
         // Execution
         userSnd.setEmail(userFst.getEmail());
         getEntityService().put(userSnd);
+    }
+
+    @Test
+    public void testPutDeletedUser() {
+        // Test data
+        User user = getBasicUserPersistent();
+
+        // Execution
+        getEntityService().delete(user);
+        getEntityService().put(user);
+
+        // Assertions
+        assertTrue(getEntityService().exists(user.getIdentifier()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPutTransientUser() {
+        // Test data
+        User user = getUserTransient(Role.USER);
+
+        // Execution
+        getEntityService().put(user);
+
+        // Assertions
+        assertTrue(getEntityService().exists(user.getIdentifier()));
     }
 
     @Test
@@ -295,6 +321,40 @@ public class UserServiceTest extends EntityServiceTest<UserService, User, String
 
         // Assertions
         assertEquals(user, gotUser);
+    }
+
+    //#endregion
+
+    //#region @Test resetPassword
+
+    @Test
+    public void testResetPasswordValidEmail() {
+        // Test data
+        User userTransient = getUserTransient(Role.USER);
+        Email email = new Email("noreply.meet.eat@gmail.com");
+        Password password = Password.createHashedPassword(PASSWORD_VALID_VALUE);
+        userTransient.setEmail(email);
+        userTransient.setPassword(password);
+
+        // Execution
+        User user = getEntityService().post(userTransient);
+        getEntityService().resetPassword(user.getEmail().toString());
+        User resetUser = getEntityService().get(user.getIdentifier()).orElseThrow();
+
+        // Assertions
+        assertNotEquals(user.getPassword(), resetUser.getPassword());
+    }
+
+    @Test
+    public void testResetPasswordUnknownEmail() {
+        // Test data
+        Email email = new Email("noreply.meet.eat@gmail.com");
+
+        // Execution
+        getEntityService().resetPassword(email.toString());
+
+        // Assertions
+        assertTrue(getEntityService().getByEmail(email).isEmpty());
     }
 
     //#endregion
